@@ -1,0 +1,95 @@
+# Production — dùng CHUNG MariaDB của dego-erp (container 'dego-erp-db-1', network 'dego-erp_default'),
+# database riêng 'procurement'. Web (nginx static + proxy /api) join 'proxy-tier' để Cloudflare Tunnel gọi tới.
+# KHÔNG có service db (tái dùng MariaDB sẵn có).
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    env_file: .env
+    restart: always
+    command: ["sh", "start.prod.sh"]
+    networks:
+      - dego-erp_default        # để tới MariaDB dego-erp-db-1:3306
+      - procurement-internal    # để web (nginx) proxy /api tới
+
+  # Forwarder chỉ để truy cập DB 'procurement' từ máy local QUA SSH TUNNEL.
+  # Bind 127.0.0.1 trên VPS -> KHÔNG lộ ra internet (UFW/loopback). Muốn tắt: comment cả block.
+  db-forward:
+    image: alpine/socat
+    container_name: procurement-db-forward
+    restart: always
+    command: TCP-LISTEN:3306,fork,reuseaddr TCP:dego-erp-db-1:3306
+    ports:
+      - "127.0.0.1:13306:3306"
+    networks:
+      - dego-erp_default
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.web.prod
+      args:
+        VITE_API_URL: "https://thumua.degoholding.vn"
+        VITE_GOOGLE_CLIENT_ID: "${VITE_GOOGLE_CLIENT_ID:-}"   # Client ID đăng nhập Google (baked lúc build web)
+        VITE_DEVELOPER_MODE: "${VITE_DEVELOPER_MODE:-}"   # bật chế độ Dev (đổi user) khi .env đặt =dev; mặc định tắt
+        VITE_PWA_INSTALL_PROMPT: "${VITE_PWA_INSTALL_PROMPT:-}"   # hiện banner "Cài ứng dụng" khi .env đặt =on; mặc định ẩn
+    container_name: procurement-web
+    restart: always
+    depends_on:
+      - api
+    networks:
+      - procurement-internal
+      - proxy-tier              # để cloudflare_tunnel (cùng net) gọi http://procurement-web:80
+
+  # --- Celery / Redis (chạy tác vụ ngầm + theo lịch). KHÔNG có RedisInsight ở prod. ---
+  redis:
+    image: redis:7.2-alpine
+    restart: always
+    command: redis-server --save 60 1
+    volumes:
+      - redis_data:/data
+    networks:
+      - procurement-internal
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    env_file: .env
+    restart: always
+    command: celery -A app.core.celery_app worker -l info -c 2
+    depends_on:
+      - redis
+      - api
+    networks:
+      - dego-erp_default        # tới MariaDB dego-erp-db-1
+      - procurement-internal    # tới redis
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    env_file: .env
+    restart: always
+    command: celery -A app.core.celery_app beat -l info --scheduler celery.beat:PersistentScheduler --schedule /app/beatdata/celerybeat-schedule
+    depends_on:
+      - redis
+      - celery-worker
+    volumes:
+      - beat_data:/app/beatdata   # giữ mốc lịch (celerybeat-schedule) qua các lần dựng lại
+    networks:
+      - procurement-internal
+
+networks:
+  dego-erp_default:
+    external: true
+  proxy-tier:
+    external: true
+  procurement-internal:
+    driver: bridge
+
+volumes:
+  redis_data:
+  beat_data:

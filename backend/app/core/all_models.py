@@ -1,0 +1,19 @@
+"""Import mọi model để Base.metadata đầy đủ (dùng cho Alembic autogenerate)."""
+from app.core.base_model import Base  # noqa: F401
+
+from app.modules.attachment import model as _attachment  # noqa: F401
+from app.modules.audit import model as _audit  # noqa: F401
+from app.modules.catalog import model as _catalog  # noqa: F401
+from app.modules.company import model as _company  # noqa: F401
+from app.modules.org_unit import model as _org_unit  # noqa: F401
+from app.modules.job_position import model as _job_position  # noqa: F401
+from app.modules.subject import model as _subject  # noqa: F401
+from app.modules.product import model as _product  # noqa: F401
+from app.modules.role import model as _role  # noqa: F401
+from app.modules.notification import model as _notification  # noqa: F401
+from app.modules.push import model as _push  # noqa: F401
+from app.modules.report import model as _report  # noqa: F401
+from app.modules.setting import model as _setting  # noqa: F401
+from app.modules.import_tool import model as _import_tool  # noqa: F401
+from app.modules.document import model as _document  # noqa: F401
+from app.modules.department import model as _department  # noqa: F401

@@ -1,0 +1,125 @@
+import { useEffect } from 'react'
+import Select, { components as RS } from 'react-select'
+
+type Opt = { value: string; label: string }
+
+// Tắt gợi ý autofill/sọc của trình duyệt khi gõ trong ô select
+const NoAutofillInput = (props: any) => <RS.Input {...props} autoComplete="off" spellCheck={false} aria-autocomplete="none" />
+
+const rsComponents = (table: boolean) =>
+  table ? { Input: NoAutofillInput, IndicatorSeparator: () => null } : { Input: NoAutofillInput }
+
+/** Select có tìm kiếm (gõ để lọc). Danh sách ngắn/dài đều dùng được.
+ *  - Chỉ 1 lựa chọn duy nhất → tự gán.
+ *  - Trống → để rỗng (không hiện "—").
+ *  - variant="table": gọn cho ô trong bảng (không nút X, viền trong suốt khi rảnh, gõ là sổ).
+ *  - colorMap: {giá trị → mã màu} → hiển thị như badge có màu (dùng cho cột trạng thái).
+ *  options nhận string[] hoặc {value,label}[].
+ */
+export default function SearchSelect({
+  value, options, onChange, disabled, placeholder = '', width, variant = 'form', colorMap,
+}: {
+  value?: string | number
+  options: (string | Opt)[]
+  onChange: (v: string) => void
+  disabled?: boolean
+  placeholder?: string
+  width?: number | string
+  variant?: 'form' | 'table'
+  colorMap?: Record<string, string>
+}) {
+  const opts: Opt[] = options.map((o) => (typeof o === 'string' ? { value: o, label: o } : o))
+  const table = variant === 'table'
+  const valStr = value !== undefined && value !== null ? String(value) : ''
+  const color = colorMap && valStr ? colorMap[valStr] : undefined
+
+  // Chỉ có đúng 1 lựa chọn và chưa chọn gì → tự gán luôn
+  useEffect(() => {
+    if (!disabled && !valStr && opts.length === 1) onChange(opts[0].value)
+  }, [opts.length, valStr, disabled])
+
+  // Nếu value không có trong options (vd NCC/ĐVT chưa được tải) → vẫn hiện value, không để trắng.
+  // '0' là sentinel FK "chưa chọn" (phòng ban/công ty…) → để trống thay vì hiện số 0.
+  const cur = opts.find((o) => o.value === valStr) || (valStr && valStr !== '0' ? { value: valStr, label: valStr } : null)
+  return (
+    <Select
+      classNamePrefix="rs"
+      value={cur} options={opts} isDisabled={disabled} isClearable={!table}
+      placeholder={placeholder}
+      onChange={(o: any) => onChange(o ? o.value : '')}
+      noOptionsMessage={() => 'Không có'}
+      menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
+      components={rsComponents(table)}
+      styles={{
+        container: (b) => ({ ...b, width: width ?? '100%' }),
+        control: (b, state: any) => table ? ({
+          ...b, minHeight: 30, borderRadius: color ? 999 : 8, fontSize: 12.5, boxShadow: 'none', cursor: 'pointer',
+          backgroundColor: color ? `${color}1a` : (state.isFocused ? '#fff' : 'transparent'),
+          border: color ? `1px solid ${color}` : (state.isFocused ? '1px solid #cbd5e1' : '1px solid transparent'),
+          ':hover': { border: color ? `1px solid ${color}` : '1px solid #cbd5e1' },
+        }) : ({
+          ...b,
+          minHeight: 40,
+          height: 40,
+          boxSizing: 'border-box',
+          borderRadius: 12,
+          backgroundColor: color ? `${color}0d` : '#fff',
+          borderColor: state.isFocused ? 'var(--teal)' : (color ? `${color}66` : '#E9EDF7'),
+          boxShadow: state.isFocused ? '0 0 0 3px rgba(0,174,239,.15)' : 'none',
+          fontSize: 13.5,
+          fontWeight: 500,
+          color: 'var(--navy)',
+          transition: 'border-color 0.2s, box-shadow 0.2s, background-color 0.2s',
+          ':hover': {
+            borderColor: state.isFocused ? 'var(--teal)' : (color ? color : '#cbd5e1')
+          }
+        }),
+        valueContainer: (b) => table ? ({ ...b, padding: '0 6px' }) : ({
+          ...b,
+          padding: '0 16px',
+        }),
+        placeholder: (b) => table ? b : ({
+          ...b,
+          margin: 0,
+        }),
+        singleValue: (b) => table ? (color ? ({ ...b, color, fontWeight: 600 }) : b) : ({
+          ...b,
+          margin: 0,
+          color: color ? color : undefined,
+          fontWeight: color ? 600 : undefined,
+        }),
+        input: (b) => table ? ({ ...b, margin: 0, padding: 0 }) : ({
+          ...b,
+          margin: 0,
+          padding: 0,
+        }),
+        indicatorsContainer: (b) => table ? b : ({
+          ...b,
+        }),
+        dropdownIndicator: (b) => table ? ({ ...b, padding: 2, color: color || '#94a3b8' }) : ({
+          ...b,
+          color: '#94a3b8',
+          padding: '0 8px',
+        }),
+        clearIndicator: (b) => table ? b : ({
+          ...b,
+          color: '#94a3b8',
+          padding: '0 8px',
+        }),
+        menu: (b) => ({ ...b, fontSize: table ? 12.5 : 14, minWidth: 160 }),
+        menuPortal: (b) => ({ ...b, zIndex: 9999 }),
+        option: (b, state: any) => {
+          const optVal = state.data ? String(state.data.value) : ''
+          const optColor = colorMap ? colorMap[optVal] : undefined
+          return {
+            ...b,
+            cursor: 'pointer',
+            color: optColor ? optColor : '#1e293b',
+            fontWeight: optColor ? 600 : 'normal',
+            backgroundColor: state.isSelected ? '#e0f2fe' : state.isFocused ? '#f1f5f9' : '#fff',
+          }
+        },
+      }}
+    />
+  )
+}

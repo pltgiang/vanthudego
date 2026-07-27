@@ -1,0 +1,260 @@
+.company-info-page {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg);
+}
+
+.company-info-page .topbar {
+  padding: 16px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.company-info-page .page-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0;
+}
+
+.company-info-page .content {
+  padding: 24px 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.company-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  padding: 0;
+  overflow: visible;
+}
+
+.company-summary-container {
+  display: flex;
+  align-items: center;
+  padding: 32px 32px;
+  gap: 24px;
+}
+
+.company-logo-section {
+  position: relative;
+}
+
+.logo-preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.logo-placeholder {
+  color: var(--muted);
+  font-size: 32px;
+}
+
+.logo-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-weight: 600;
+  gap: 4px;
+}
+
+.logo-preview:hover .logo-overlay {
+  opacity: 1;
+}
+
+.company-summary-info h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 8px 0;
+}
+
+.tax-code-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: var(--info-bg);
+  color: var(--teal-dark);
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.company-blocks-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.company-blocks-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 992px) {
+  .company-blocks-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.info-section {
+  padding: 24px;
+}
+
+.info-section .section-header {
+  margin-bottom: 24px;
+  border-bottom: 1px dashed var(--border);
+  padding-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.info-section .section-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0;
+}
+
+.info-section .section-header i {
+  font-size: 22px;
+}
+
+.info-section .section-header.blue i { color: #1c64f2; }
+.info-section .section-header.green i { color: #059669; }
+.info-section .section-header.purple i { color: #7e3af2; }
+.info-section .section-header.orange i { color: #d97706; }
+
+.section-body.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 14px;
+}
+
+.section-body .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.section-body .field.col-span-2 {
+  grid-column: span 2;
+}
+
+.section-body .field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  margin: 0;
+}
+
+.section-body .field label .req {
+  color: var(--red);
+}
+
+.group-model-banner {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.group-model-banner .icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #e0f2fe;
+  color: #0ea5e9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.group-model-banner h4 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  color: var(--navy);
+}
+
+.group-model-banner p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.company-status-badge.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  font-size: 13px !important;
+  border-radius: 100px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Folder Tabs */
+.folder-tabs-container {
+  display: flex;
+  position: relative;
+  z-index: 10;
+  margin-bottom: -1px;
+}
+.folder-tabs {
+  display: flex;
+  gap: 4px;
+}
+.folder-tab {
+  padding: 12px 24px;
+  background-color: #e2e8f0;
+  color: #475569;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.folder-tab:hover {
+  background-color: #cbd5e1;
+}
+.folder-tab.active {
+  background-color: #ffffff;
+  color: #00aeef;
+}
+
+
+/* Flexbox layout helpers */
+.row { display: flex; gap: 24px; }
+.col { flex: 1; }
+@media (max-width: 992px) { .row { flex-direction: column; } }
