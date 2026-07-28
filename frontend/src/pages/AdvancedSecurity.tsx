@@ -9,31 +9,27 @@ export default function AdvancedSecurity() {
   const [restrictScope, setRestrictScope] = useState('ALL_APPS')
   
   return (
-    <div className="company-info-page h-100 dis-flex dis-flex-column" style={{ padding: 0, background: '#f1f5f9' }}>
+    <div className="company-info-page h-100">
       {/* TOPBAR */}
-      <div className="topbar px-34 py-12 dis-flex align-items-center justify-content-between" style={{ backgroundColor: '#fff', borderRadius: 0, borderBottom: '1px solid #e2e8f0' }}>
-        <h2 className="page-title mb-0" style={{ fontSize: 20, fontWeight: 700, color: '#1e293b' }}>
-          Bảo mật nâng cao
-        </h2>
-        <div className="actions dis-flex align-items-center gap-12">
+      <div className="topbar dis-flex align-items-center">
+        <div className="page-title mb-0 flex1">Bảo mật nâng cao</div>
+        <div className="actions dis-flex">
           {!isEditMode ? (
-            <button className="btn btn-primary dis-flex align-items-center gap-8" onClick={() => setIsEditMode(true)} style={{ borderRadius: 6, background: '#00aeef', borderColor: '#00aeef' }}>
+            <button className="btn btn-primary" onClick={() => setIsEditMode(true)}>
               <i className="ti ti-pencil" /> Chỉnh sửa
             </button>
           ) : (
             <>
-              <button className="btn ghost" onClick={() => setIsEditMode(false)} style={{ background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: 6 }}>Hủy bỏ</button>
-              <button className="btn btn-primary dis-flex align-items-center gap-8" onClick={() => setIsEditMode(false)} style={{ borderRadius: 6, background: '#00aeef', borderColor: '#00aeef' }}>
-                <i className="ti ti-device-floppy" /> Lưu
-              </button>
+              <button className="btn ghost" onClick={() => setIsEditMode(false)}>Hủy</button>
+              <button className="btn btn-primary" onClick={() => setIsEditMode(false)}>Lưu</button>
             </>
           )}
         </div>
       </div>
 
       {/* CONTENT */}
-      <div className="content scrollable company-blocks-layout flex1">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div className="content scrollable company-blocks-layout">
+        <div className="company-blocks-grid" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           
           {/* BLOCK 1: TỰ ĐỘNG ĐĂNG XUẤT */}
           <div className="company-card info-section">
