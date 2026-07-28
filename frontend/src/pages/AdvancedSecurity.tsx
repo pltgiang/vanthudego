@@ -39,19 +39,18 @@ export default function AdvancedSecurity() {
             </div>
             
             <div className="section-body">
-              <div className="dis-flex align-items-start mb-3" style={{ gap: '10px' }}>
-                <label className="switch" style={{ opacity: isEditMode ? 1 : 0.6, cursor: isEditMode ? 'pointer' : 'not-allowed' }}>
-                  <input type="checkbox" checked={autoLogout} disabled={!isEditMode} onChange={(e) => setAutoLogout(e.target.checked)} />
-                  <span className="slider round"></span>
-                </label>
+              <div className="dis-flex align-items-start mb-20" style={{ gap: '16px' }}>
+                <div className={`switch-toggle ${autoLogout ? 'active' : ''}`} style={{ opacity: isEditMode ? 1 : 0.6, cursor: isEditMode ? 'pointer' : 'not-allowed', flexShrink: 0, marginTop: 2 }} onClick={() => isEditMode && setAutoLogout(!autoLogout)}>
+                  <div className="switch-knob"></div>
+                </div>
                 <div>
-                  <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)', marginBottom: '4px' }}>Tự động đăng xuất</div>
+                  <div style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text)', marginBottom: '4px' }}>Tự động đăng xuất</div>
                   <div style={{ fontSize: '13px', color: '#6B7280' }}>Tính từ thời điểm người dùng đăng nhập, cứ sau khoảng thời gian đã thiết lập hệ thống sẽ tự động đăng xuất.</div>
                 </div>
               </div>
               
               {autoLogout && (
-                <div className="dis-flex align-items-center" style={{ gap: '12px', marginLeft: '46px' }}>
+                <div className="dis-flex align-items-center" style={{ gap: '12px', marginLeft: '56px' }}>
                   <input type="number" className="form-control" style={{ width: '100px' }} placeholder="Số" disabled={!isEditMode} defaultValue={30} />
                   <select className="form-control" style={{ width: '120px' }} disabled={!isEditMode}>
                     <option value="phút">phút</option>
@@ -70,18 +69,17 @@ export default function AdvancedSecurity() {
             </div>
             
             <div className="section-body">
-              <div className="dis-flex align-items-start mb-3" style={{ gap: '10px' }}>
-                <label className="switch" style={{ opacity: isEditMode ? 1 : 0.6, cursor: isEditMode ? 'pointer' : 'not-allowed' }}>
-                  <input type="checkbox" checked={ipRestrict} disabled={!isEditMode} onChange={(e) => setIpRestrict(e.target.checked)} />
-                  <span className="slider round"></span>
-                </label>
+              <div className="dis-flex align-items-start mb-20" style={{ gap: '16px' }}>
+                <div className={`switch-toggle ${ipRestrict ? 'active' : ''}`} style={{ opacity: isEditMode ? 1 : 0.6, cursor: isEditMode ? 'pointer' : 'not-allowed', flexShrink: 0, marginTop: 2 }} onClick={() => isEditMode && setIpRestrict(!ipRestrict)}>
+                  <div className="switch-knob"></div>
+                </div>
                 <div>
-                  <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }}>Giới hạn truy cập theo địa chỉ IP</div>
+                  <div style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text)' }}>Giới hạn truy cập theo địa chỉ IP</div>
                 </div>
               </div>
 
               {ipRestrict && (
-                <div className="mb-4" style={{ marginLeft: '46px' }}>
+                <div className="mb-24" style={{ marginLeft: '56px' }}>
                   <div className="dis-flex align-items-center mb-2" style={{ gap: '8px' }}>
                     <div className="chips-input border rounded p-2 flex1 dis-flex align-items-center flex-wrap" style={{ minHeight: '40px', gap: '4px', backgroundColor: !isEditMode ? '#f9fafb' : '#fff' }}>
                       <span className="chip" style={{ backgroundColor: '#F1F3F6', padding: '4px 8px', borderRadius: '4px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -94,18 +92,17 @@ export default function AdvancedSecurity() {
                 </div>
               )}
 
-              <div className="dis-flex align-items-start mb-3" style={{ gap: '10px' }}>
-                <label className="switch" style={{ opacity: isEditMode ? 1 : 0.6, cursor: isEditMode ? 'pointer' : 'not-allowed' }}>
-                  <input type="checkbox" checked={timeRestrict} disabled={!isEditMode} onChange={(e) => setTimeRestrict(e.target.checked)} />
-                  <span className="slider round"></span>
-                </label>
+              <div className="dis-flex align-items-start mb-20" style={{ gap: '16px' }}>
+                <div className={`switch-toggle ${timeRestrict ? 'active' : ''}`} style={{ opacity: isEditMode ? 1 : 0.6, cursor: isEditMode ? 'pointer' : 'not-allowed', flexShrink: 0, marginTop: 2 }} onClick={() => isEditMode && setTimeRestrict(!timeRestrict)}>
+                  <div className="switch-knob"></div>
+                </div>
                 <div>
-                  <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }}>Giới hạn truy cập theo thời gian</div>
+                  <div style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text)' }}>Giới hạn truy cập theo thời gian</div>
                 </div>
               </div>
 
               {timeRestrict && (
-                <div className="mb-4" style={{ marginLeft: '46px' }}>
+                <div className="mb-24" style={{ marginLeft: '56px' }}>
                   <div className="border rounded p-3 mb-2">
                     <div className="dis-flex align-items-center mb-3" style={{ gap: '16px' }}>
                       <div className="dis-flex align-items-center" style={{ gap: '8px' }}>
@@ -135,8 +132,8 @@ export default function AdvancedSecurity() {
                 </div>
               )}
 
-              <div className="mt-4 pt-4 border-top">
-                <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)', marginBottom: '8px' }}>Áp dụng giới hạn truy cập cho</div>
+              <div className="mt-24 pt-24 border-top">
+                <div style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text)', marginBottom: '12px' }}>Áp dụng giới hạn truy cập cho</div>
                 <div className="dis-flex flex-column gap-2 mb-3">
                   <label className="dis-flex align-items-center" style={{ gap: '8px', cursor: isEditMode ? 'pointer' : 'not-allowed' }}>
                     <input type="radio" name="scope" value="ALL_APPS" checked={restrictScope === 'ALL_APPS'} disabled={!isEditMode} onChange={(e) => setRestrictScope(e.target.value)} />
@@ -157,9 +154,9 @@ export default function AdvancedSecurity() {
                 )}
               </div>
 
-              <div className="mt-4">
-                <div className="dis-flex align-items-center justify-content-between mb-3">
-                  <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }}>Danh sách người dùng không bị giới hạn truy cập</div>
+              <div className="mt-32">
+                <div className="dis-flex align-items-center justify-content-between mb-16">
+                  <div style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text)' }}>Danh sách người dùng không bị giới hạn truy cập</div>
                   {isEditMode && (
                     <div className="dis-flex gap-2">
                       <button className="btn ghost">+ Thêm danh sách quản trị</button>
@@ -198,13 +195,12 @@ export default function AdvancedSecurity() {
             </div>
             
             <div className="section-body">
-              <div className="dis-flex align-items-start mb-3" style={{ gap: '10px' }}>
-                <label className="switch" style={{ opacity: isEditMode ? 1 : 0.6, cursor: isEditMode ? 'pointer' : 'not-allowed' }}>
-                  <input type="checkbox" checked={emailRestrict} disabled={!isEditMode} onChange={(e) => setEmailRestrict(e.target.checked)} />
-                  <span className="slider round"></span>
-                </label>
+              <div className="dis-flex align-items-start mb-20" style={{ gap: '16px' }}>
+                <div className={`switch-toggle ${emailRestrict ? 'active' : ''}`} style={{ opacity: isEditMode ? 1 : 0.6, cursor: isEditMode ? 'pointer' : 'not-allowed', flexShrink: 0, marginTop: 2 }} onClick={() => isEditMode && setEmailRestrict(!emailRestrict)}>
+                  <div className="switch-knob"></div>
+                </div>
                 <div>
-                  <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)', marginBottom: '4px' }}>Giới hạn tên miền email tài khoản</div>
+                  <div style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text)', marginBottom: '4px' }}>Giới hạn tên miền email tài khoản</div>
                   <div style={{ fontSize: '13px', color: '#6B7280' }}>
                     Tên miền email là những ký tự sau dấu @, ví dụ: gmail.com; outlook.com;<br/>
                     Chỉ những email chứa tên miền cho phép mới có thể dùng làm email TK.
@@ -213,7 +209,7 @@ export default function AdvancedSecurity() {
               </div>
               
               {emailRestrict && (
-                <div className="chips-input border rounded p-2 ml-4" style={{ marginLeft: '46px', minHeight: '40px', backgroundColor: !isEditMode ? '#f9fafb' : '#fff' }}>
+                <div className="chips-input border rounded p-2" style={{ marginLeft: '56px', minHeight: '40px', backgroundColor: !isEditMode ? '#f9fafb' : '#fff' }}>
                   {isEditMode && <input type="text" placeholder="Thêm tên miền..." style={{ border: 'none', outline: 'none', width: '100%', backgroundColor: 'transparent' }} />}
                 </div>
               )}
