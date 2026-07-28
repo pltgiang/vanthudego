@@ -69,20 +69,20 @@ export default function JobPositionForm() {
     finally { setLoading(false) }
   }
 
-  const companyOptions = companies.map((c: any) => ({ value: c.id, label: c.name }))
+  const companyOptions = companies.map((c: any) => ({ value: c.id, label: c.name, image: c.logo }))
 
   if (initialLoading) return <div className="p-24 text-muted">Đang tải...</div>
 
   return (
     <div className="company-info-page h-100 flex1">
-      <div className="topbar dis-flex align-items-center">
-        <button type="button" className="btn ghost icon-btn mr-12" onClick={() => navigate('/job-positions')} style={{ background: '#f1f5f9' }}>
+      <div className="topbar dis-flex align-items-center gap-16">
+        <button type="button" className="btn ghost icon-btn" onClick={() => navigate('/job-positions')} style={{ background: '#f1f5f9' }}>
           <i className="ti ti-arrow-left"></i>
         </button>
         <h2 className="page-title mb-0 flex1" style={{ fontSize: 20, fontWeight: 700, color: '#1e293b' }}>
           {!isNew ? 'Sửa vị trí công việc' : 'Thêm mới Vị trí công việc'}
         </h2>
-        <div className="actions dis-flex">
+        <div className="actions dis-flex gap-8">
           <button type="button" className="btn ghost" onClick={() => navigate('/job-positions')} disabled={loading} style={{ background: '#f1f5f9', color: '#475569', border: 'none' }}>Hủy</button>
           <button type="button" className="btn btn-primary" onClick={handleSave} disabled={loading}>Lưu / Thực hiện</button>
         </div>

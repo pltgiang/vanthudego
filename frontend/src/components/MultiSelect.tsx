@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react'
 export type Option = {
   value: string | number
   label: string
+  image?: string
 }
 
 export default function MultiSelect({ options, value = [], onChange, placeholder = "Chọn..." }: { 
@@ -49,6 +50,7 @@ export default function MultiSelect({ options, value = [], onChange, placeholder
         
         {selectedOptions.map(o => (
           <div key={o.value} className="badge bg-light text-dark dis-flex align-items-center gap-4" style={{ padding: '2px 8px' }}>
+            {o.image && <img src={o.image} alt="" style={{ width: 16, height: 16, borderRadius: '50%', objectFit: 'cover' }} />}
             {o.label}
             <i className="ti ti-x cursor-pointer" onClick={(e) => { e.stopPropagation(); handleToggle(o.value) }} style={{ fontSize: 11 }} />
           </div>
@@ -91,6 +93,7 @@ export default function MultiSelect({ options, value = [], onChange, placeholder
                 }}>
                   {value.includes(o.value) && <i className="ti ti-check" style={{ color: '#fff', fontSize: 10 }} />}
                 </div>
+                {o.image && <img src={o.image} alt={o.label} style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover' }} />}
                 {o.label}
               </div>
             ))
