@@ -24,13 +24,13 @@ export default function JobPositionForm() {
     const fetchData = async () => {
       try {
         const [rd, rt, rc] = await Promise.all([
-          api.get('/api/v1/system/departments'),
+          api.get('/api/departments?page_size=1000'),
           api.get('/api/v1/system/job-titles'),
-          api.get('/api/v1/system/companies')
+          api.get('/api/companies?page_size=1000')
         ])
-        setDepartments(rd.data.data || [])
-        setTitles(rt.data.data || [])
-        setCompanies(rc.data.data || [])
+        setDepartments(rd.data.data?.items || rd.data.data || [])
+        setTitles(rt.data.data?.items || rt.data.data || [])
+        setCompanies(rc.data.data?.items || rc.data.data || [])
         
         if (!isNew) {
           const res = await api.get(`/api/v1/system/job-positions/${id}`)
