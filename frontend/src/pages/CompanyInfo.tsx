@@ -139,10 +139,15 @@ export default function CompanyInfo() {
           </button>
           <span>{id === 'new' ? 'Thêm mới công ty' : 'Thông tin công ty'}</span>
         </div>
-        <div className="actions dis-flex gap-10">
-          <button className="btn ghost" onClick={() => navigate('/company-info')}>Quay lại</button>
-          <button className="btn" onClick={handleSave} disabled={saving}>
-            {saving ? 'Đang lưu...' : 'Lưu'}
+        <div className="actions dis-flex">
+          <button type="button" className="btn ghost" onClick={() => navigate('/company-info')} style={{ background: 'rgb(241, 245, 249)', color: 'rgb(71, 85, 105)', border: 'none', marginRight: '12px' }}>
+            Hủy bỏ
+          </button>
+          <button type="button" className="btn" onClick={handleSave} disabled={saving} style={{ marginRight: '12px', background: 'white', border: '1px solid rgb(203, 213, 225)', display: 'flex', alignItems: 'center', gap: '6px', color: 'rgb(14, 165, 233)' }}>
+            <i className="ti ti-device-floppy"></i> {saving ? 'Đang lưu...' : 'Lưu'}
+          </button>
+          <button type="button" className="btn btn-primary" onClick={handleSave} disabled={saving}>
+            Hoàn tất
           </button>
         </div>
       </div>
@@ -325,52 +330,58 @@ export default function CompanyInfo() {
             </div>
           </div>
         </div>
-        <div className="company-blocks-grid mt-24">
-          {/* 5. Thao tác khác */}
-          <div className="company-card info-section">
-            <div className="section-header blue">
-              <i className="ti ti-apps"></i>
-              <h3>Thao tác khác</h3>
+        {id !== 'new' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '24px' }}>
+            {/* 5. Thao tác khác */}
+            <div className="company-card info-section">
+              <div className="section-header orange">
+                <i className="ti ti-settings"></i>
+                <h3>Thao tác khác</h3>
+              </div>
+              <div className="section-body">
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <button type="button" className="btn outline" style={{ color: 'var(--red)', borderColor: 'var(--red)', background: '#fff' }}>
+                    <i className="ti ti-trash"></i> Xóa bản ghi
+                  </button>
+                  <button type="button" className="btn outline">
+                    <i className="ti ti-printer"></i> In thông tin
+                  </button>
+                  <button type="button" className="btn outline">
+                    <i className="ti ti-file-export"></i> Xuất dữ liệu
+                  </button>
+                </div>
+              </div>
             </div>
-            <div className="section-body p-16 dis-flex gap-12 flex-wrap">
-              <button type="button" className="btn outline err">
-                <i className="ti ti-trash mr-4"></i> Xóa công ty
-              </button>
-              <button type="button" className="btn outline">
-                <i className="ti ti-printer mr-4"></i> In thông tin
-              </button>
-              <button type="button" className="btn outline">
-                <i className="ti ti-file-export mr-4"></i> Xuất dữ liệu
-              </button>
-            </div>
-          </div>
 
-          {/* 6. Lịch sử chỉnh sửa */}
-          <div className="company-card info-section">
-            <div className="section-header purple">
-              <i className="ti ti-history"></i>
-              <h3>Lịch sử chỉnh sửa</h3>
-            </div>
-            <div className="section-body grid-2">
-              <div className="field">
-                <label>Người tạo</label>
-                <input type="text" className="form-control" disabled value={formData.created_by || 'Hệ thống'} />
+            {/* 6. Lịch sử thao tác */}
+            <div className="company-card info-section">
+              <div className="section-header green">
+                <i className="ti ti-history"></i>
+                <h3>Lịch sử thao tác</h3>
               </div>
-              <div className="field">
-                <label>Ngày tạo</label>
-                <input type="text" className="form-control" disabled value={formData.created_at ? new Date(formData.created_at).toLocaleString('vi-VN') : ''} />
-              </div>
-              <div className="field">
-                <label>Người sửa cuối</label>
-                <input type="text" className="form-control" disabled value={formData.updated_by || 'Chưa cập nhật'} />
-              </div>
-              <div className="field">
-                <label>Thời gian sửa cuối</label>
-                <input type="text" className="form-control" disabled value={formData.updated_at ? new Date(formData.updated_at).toLocaleString('vi-VN') : ''} />
+              <div className="section-body">
+                <div className="timeline">
+                  {formData.updated_at && (
+                    <div className="tl-item">
+                      <span className="tl-dot update"></span>
+                      <div>
+                        <div style={{ fontSize: '14px' }}><b>{formData.updated_by || 'Người dùng'}</b> — Cập nhật thông tin</div>
+                        <div style={{ fontSize: '12px', color: '#64748b' }}>{new Date(formData.updated_at).toLocaleString('vi-VN')}</div>
+                      </div>
+                    </div>
+                  )}
+                  <div className="tl-item">
+                    <span className="tl-dot create"></span>
+                    <div>
+                      <div style={{ fontSize: '14px' }}><b>{formData.created_by || 'Hệ thống'}</b> — Tạo mới công ty</div>
+                      <div style={{ fontSize: '12px', color: '#64748b' }}>{formData.created_at ? new Date(formData.created_at).toLocaleString('vi-VN') : ''}</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
