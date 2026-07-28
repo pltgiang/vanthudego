@@ -88,12 +88,14 @@ export default function MultiSelect({ options, value = [], onChange, placeholder
           </div>
         ))}
         
-        <input 
-          type="text" 
-          value={q}
-          onChange={e => { setQ(e.target.value); setOpen(true) }}
-          style={{ border: 'none', outline: 'none', background: 'transparent', flex: 1, minWidth: 60, padding: 4 }}
-        />
+        {variant === 'default' && (
+          <input 
+            type="text" 
+            value={q}
+            onChange={e => { setQ(e.target.value); setOpen(true) }}
+            style={{ border: 'none', outline: 'none', background: 'transparent', flex: 1, minWidth: 60, padding: 4 }}
+          />
+        )}
 
         {variant === 'avatars' && <i className="ti ti-chevron-down" style={{ marginLeft: 'auto', color: '#94a3b8', marginRight: 4 }}></i>}
       </div>
