@@ -112,7 +112,7 @@ export default function VpnPermissionList() {
                 <option value="ALL">Tất cả Quyền VPN</option>
                 <option value="Dego">Dego</option>
                 <option value="IDA">IDA</option>
-                <option value="IDA,1433">IDA,1433</option>
+                <option value="IDA_1433">IDA,1433</option>
               </select>
             </div>
             <div className="actions dis-flex align-items-center gap-12">
@@ -178,7 +178,7 @@ export default function VpnPermissionList() {
                       <td style={{ textAlign: 'center' }}>
                         <div className="dis-flex justify-content-center">
                           <label className="cursor-pointer" style={{ margin: 0 }}>
-                            <div className={`switch-toggle ${servers.includes('IDA,1433') ? 'active' : ''}`} onClick={() => handleToggleVpn(item.id, 'IDA,1433', !servers.includes('IDA,1433'), access)}>
+                            <div className={`switch-toggle ${servers.includes('IDA_1433') ? 'active' : ''}`} onClick={() => handleToggleVpn(item.id, 'IDA_1433', !servers.includes('IDA_1433'), access)}>
                               <div className="switch-knob"></div>
                             </div>
                           </label>
