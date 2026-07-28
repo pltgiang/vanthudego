@@ -69,7 +69,7 @@ export default function JobPositionForm() {
     finally { setLoading(false) }
   }
 
-  const companyOptions = companies.map((c: any) => ({ value: c.id, label: c.company_name }))
+  const companyOptions = companies.map((c: any) => ({ value: c.id, label: c.name }))
 
   if (initialLoading) return <div className="p-24 text-muted">Đang tải...</div>
 
@@ -125,7 +125,7 @@ export default function JobPositionForm() {
                 <label>Phòng ban</label>
                 <select className="form-control" value={form.department_id || ''} onChange={e => handleChange('department_id', e.target.value ? parseInt(e.target.value) : null)}>
                   <option value="">- Chọn phòng ban -</option>
-                  {departments.map((d: any) => <option key={d.id} value={d.id}>{d.department_name}</option>)}
+                  {departments.map((d: any) => <option key={d.id} value={d.id}>{d.name}</option>)}
                 </select>
               </div>
               <div className="field col-span-2">
