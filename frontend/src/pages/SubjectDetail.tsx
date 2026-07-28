@@ -187,8 +187,8 @@ export default function SubjectDetail() {
           <div className="company-card bg-white mb-24" style={{ padding: 24 }}>
             <div className="dis-flex align-items-center gap-24">
               <div 
-                className="avatar-placeholder flex-shrink-0" 
-                style={{ width: 100, height: 100, borderRadius: 8, backgroundColor: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e2e8f0', cursor: 'pointer', position: 'relative' }}
+                className="logo-preview flex-shrink-0" 
+                style={{ borderRadius: 8 }}
                 onClick={() => document.getElementById('avatar-upload')?.click()}
                 title="Nhấn để thay đổi ảnh đại diện"
               >
@@ -217,7 +217,7 @@ export default function SubjectDetail() {
                   }}
                 />
                 {form.avatar ? (
-                  <img src={form.avatar} alt="Avatar" style={{ width: '100%', height: '100%', borderRadius: 8, objectFit: 'cover' }} />
+                  <img src={form.avatar} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : displayName !== 'HỌ VÀ TÊN' ? (
                   <span style={{ fontSize: 32, fontWeight: 'bold', color: '#64748b' }}>
                     {displayName.charAt(0).toUpperCase()}
@@ -225,6 +225,9 @@ export default function SubjectDetail() {
                 ) : (
                   <i className="ti ti-user" style={{ fontSize: 40, color: '#cbd5e1' }} />
                 )}
+                <div className="logo-overlay" style={{ borderRadius: 8 }}>
+                  <i className="ti ti-pencil" style={{ fontSize: 24 }}></i>
+                </div>
               </div>
               <div>
                 <h3 className="mb-12" style={{ fontSize: 20, fontWeight: 700, color: '#1e293b', textTransform: 'uppercase', margin: '0 0 12px 0' }}>{displayName}</h3>
