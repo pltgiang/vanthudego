@@ -2355,3 +2355,30 @@ input,
   padding-left: 34px !important;
   padding-right: 34px !important;
 }
+/* Switch Toggle Component */
+.switch-toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background-color: #e2e8f0;
+  border-radius: 12px;
+  transition: background-color 0.2s ease-in-out;
+  cursor: pointer;
+}
+.switch-toggle.active {
+  background-color: #10b981;
+}
+.switch-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.switch-toggle.active .switch-knob {
+  transform: translateX(20px);
+}

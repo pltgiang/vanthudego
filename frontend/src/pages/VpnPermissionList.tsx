@@ -31,7 +31,7 @@ export default function VpnPermissionList() {
     fetchSubjects()
   }, [])
 
-  const handleToggleVpn = async (id: int, server: string, isChecked: boolean, currentAccess: string) => {
+  const handleToggleVpn = async (id: number, server: string, isChecked: boolean, currentAccess: string) => {
     const servers = currentAccess ? currentAccess.split(',').map(s => s.trim()).filter(s => s) : []
     let newServers = [...servers]
     if (isChecked && !newServers.includes(server)) {

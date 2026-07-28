@@ -98,7 +98,7 @@ export default function VpnPermissionDetail() {
           <button className="btn ghost icon-btn" onClick={() => navigate('/vpn')}>
             <i className="ti ti-arrow-left"></i>
           </button>
-          <span>Chỉnh sửa quyền VPN</span>
+          <span>Chỉnh sửa quyền VPN: {subject.subject_name}</span>
         </div>
         <div className="actions dis-flex">
           <button type="button" className="btn ghost" onClick={() => navigate('/vpn')} style={{ background: 'rgb(241, 245, 249)', color: 'rgb(71, 85, 105)', border: 'none', marginRight: '12px' }}>
@@ -113,7 +113,7 @@ export default function VpnPermissionDetail() {
         </div>
       </div>
 
-      <div className="content scrollable company-blocks-layout" style={{ padding: '24px' }}>
+      <div className="content scrollable company-blocks-layout">
         <div className="company-blocks-grid">
           {/* 1. Thông tin chung */}
           <div className="company-card info-section">
