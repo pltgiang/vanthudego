@@ -52,25 +52,44 @@ export default function MultiSelect({ options, value = [], onChange, placeholder
         {variant === 'avatars' && selectedOptions.length > 0 && (
           <div className="dis-flex align-items-center" style={{ marginLeft: 4 }}>
             {selectedOptions.slice(0, 5).map((o, idx) => (
-              <img 
-                key={o.value}
-                src={o.image || 'https://i.pravatar.cc/150'} 
-                alt={o.label} 
-                title={o.label}
-                style={{ 
-                  width: 28, height: 28, borderRadius: '50%', 
-                  border: '2px solid #fff', 
-                  marginLeft: idx === 0 ? 0 : -10, 
-                  zIndex: 10 - idx, 
-                  objectFit: 'cover' 
-                }} 
-              />
+              o.image ? (
+                <img 
+                  key={o.value}
+                  src={o.image} 
+                  alt={o.label} 
+                  title={o.label}
+                  style={{ 
+                    width: 28, height: 28, borderRadius: '50%', 
+                    border: '1px solid #e2e8f0', 
+                    marginLeft: idx === 0 ? 0 : -10, 
+                    zIndex: 10 - idx, 
+                    objectFit: 'cover' 
+                  }} 
+                />
+              ) : (
+                <div 
+                  key={o.value}
+                  title={o.label}
+                  style={{ 
+                    width: 28, height: 28, borderRadius: '50%', 
+                    border: '1px solid #e2e8f0', 
+                    marginLeft: idx === 0 ? 0 : -10, 
+                    zIndex: 10 - idx, 
+                    backgroundColor: '#f1f5f9', 
+                    color: '#475569', 
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                    fontSize: 12, fontWeight: 600 
+                  }}
+                >
+                  {o.label.charAt(0).toUpperCase()}
+                </div>
+              )
             ))}
             {selectedOptions.length > 5 && (
               <div style={{ 
                 width: 28, height: 28, borderRadius: '50%', 
-                border: '2px solid #fff', marginLeft: -10, zIndex: 0, 
-                backgroundColor: '#e2e8f0', color: '#475569', 
+                border: '1px solid #e2e8f0', marginLeft: -10, zIndex: 0, 
+                backgroundColor: '#f1f5f9', color: '#475569', 
                 display: 'flex', alignItems: 'center', justifyContent: 'center', 
                 fontSize: 12, fontWeight: 600 
               }}>
@@ -129,7 +148,17 @@ export default function MultiSelect({ options, value = [], onChange, placeholder
                 }}>
                   {value.includes(o.value) && <i className="ti ti-check" style={{ color: '#fff', fontSize: 10 }} />}
                 </div>
-                {o.image && <img src={o.image} alt={o.label} style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover' }} />}
+                {variant === 'avatars' ? (
+                  o.image ? (
+                    <img src={o.image} alt={o.label} style={{ width: 24, height: 24, borderRadius: '50%', border: '1px solid #e2e8f0', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ width: 24, height: 24, borderRadius: '50%', border: '1px solid #e2e8f0', backgroundColor: '#f1f5f9', color: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600 }}>
+                      {o.label.charAt(0).toUpperCase()}
+                    </div>
+                  )
+                ) : (
+                  o.image && <img src={o.image} alt={o.label} style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover' }} />
+                )}
                 {o.label}
               </div>
             ))
