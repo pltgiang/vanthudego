@@ -149,35 +149,59 @@ export default function VpnPermissionDetail() {
             </div>
             <div className="section-body">
               <div className="dis-flex dis-flex-column gap-16">
-                <label className="dis-flex align-items-center gap-12 cursor-pointer p-12 border" style={{ borderRadius: 8, backgroundColor: servers.includes('Dego') ? '#f0f9ff' : 'transparent', borderColor: servers.includes('Dego') ? '#bae6fd' : '#e2e8f0', transition: 'all 0.2s' }}>
-                  <div className={`switch-toggle ${servers.includes('Dego') ? 'active' : ''}`} onClick={() => toggleServer('Dego')}>
-                    <div className="switch-knob"></div>
-                  </div>
+                <div className="dis-flex align-items-center justify-content-between p-12 border" style={{ borderRadius: 8, backgroundColor: servers.includes('Dego') ? '#f0fdf4' : 'transparent', borderColor: servers.includes('Dego') ? '#bbf7d0' : '#e2e8f0', transition: 'all 0.2s' }}>
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>Máy chủ Dego</div>
                     <div style={{ fontSize: 13, color: '#64748b', marginTop: 2 }}>Cấp quyền kết nối VPN tới mạng nội bộ của Dego</div>
                   </div>
-                </label>
+                  <button 
+                    type="button" 
+                    className="btn" 
+                    onClick={() => toggleServer('Dego')}
+                    style={servers.includes('Dego') 
+                      ? { border: '1px solid #10b981', color: '#fff', backgroundColor: '#10b981', borderRadius: '6px', fontWeight: 500, height: '40px', padding: '0px 16px', transition: 'all 0.2s' }
+                      : { border: '1px solid rgb(203, 213, 225)', color: 'rgb(100, 116, 139)', backgroundColor: 'transparent', borderRadius: '6px', fontWeight: 500, height: '40px', padding: '0px 16px', transition: 'all 0.2s' }
+                    }
+                  >
+                    {servers.includes('Dego') ? 'Đã cấp quyền' : 'Cấp quyền'}
+                  </button>
+                </div>
                 
-                <label className="dis-flex align-items-center gap-12 cursor-pointer p-12 border" style={{ borderRadius: 8, backgroundColor: servers.includes('IDA') ? '#f0f9ff' : 'transparent', borderColor: servers.includes('IDA') ? '#bae6fd' : '#e2e8f0', transition: 'all 0.2s' }}>
-                  <div className={`switch-toggle ${servers.includes('IDA') ? 'active' : ''}`} onClick={() => toggleServer('IDA')}>
-                    <div className="switch-knob"></div>
-                  </div>
+                <div className="dis-flex align-items-center justify-content-between p-12 border" style={{ borderRadius: 8, backgroundColor: servers.includes('IDA') ? '#f0fdf4' : 'transparent', borderColor: servers.includes('IDA') ? '#bbf7d0' : '#e2e8f0', transition: 'all 0.2s' }}>
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>Máy chủ IDA</div>
                     <div style={{ fontSize: 13, color: '#64748b', marginTop: 2 }}>Cấp quyền kết nối VPN tới mạng hệ thống IDA</div>
                   </div>
-                </label>
+                  <button 
+                    type="button" 
+                    className="btn" 
+                    onClick={() => toggleServer('IDA')}
+                    style={servers.includes('IDA') 
+                      ? { border: '1px solid #10b981', color: '#fff', backgroundColor: '#10b981', borderRadius: '6px', fontWeight: 500, height: '40px', padding: '0px 16px', transition: 'all 0.2s' }
+                      : { border: '1px solid rgb(203, 213, 225)', color: 'rgb(100, 116, 139)', backgroundColor: 'transparent', borderRadius: '6px', fontWeight: 500, height: '40px', padding: '0px 16px', transition: 'all 0.2s' }
+                    }
+                  >
+                    {servers.includes('IDA') ? 'Đã cấp quyền' : 'Cấp quyền'}
+                  </button>
+                </div>
                 
-                <label className="dis-flex align-items-center gap-12 cursor-pointer p-12 border" style={{ borderRadius: 8, backgroundColor: servers.includes('IDA,1433') ? '#f0f9ff' : 'transparent', borderColor: servers.includes('IDA,1433') ? '#bae6fd' : '#e2e8f0', transition: 'all 0.2s' }}>
-                  <div className={`switch-toggle ${servers.includes('IDA,1433') ? 'active' : ''}`} onClick={() => toggleServer('IDA,1433')}>
-                    <div className="switch-knob"></div>
-                  </div>
+                <div className="dis-flex align-items-center justify-content-between p-12 border" style={{ borderRadius: 8, backgroundColor: servers.includes('IDA,1433') ? '#f0fdf4' : 'transparent', borderColor: servers.includes('IDA,1433') ? '#bbf7d0' : '#e2e8f0', transition: 'all 0.2s' }}>
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>Cổng IDA,1433</div>
                     <div style={{ fontSize: 13, color: '#64748b', marginTop: 2 }}>Cấp quyền truy cập cổng 1433 trên máy chủ IDA</div>
                   </div>
-                </label>
+                  <button 
+                    type="button" 
+                    className="btn" 
+                    onClick={() => toggleServer('IDA,1433')}
+                    style={servers.includes('IDA,1433') 
+                      ? { border: '1px solid #10b981', color: '#fff', backgroundColor: '#10b981', borderRadius: '6px', fontWeight: 500, height: '40px', padding: '0px 16px', transition: 'all 0.2s' }
+                      : { border: '1px solid rgb(203, 213, 225)', color: 'rgb(100, 116, 139)', backgroundColor: 'transparent', borderRadius: '6px', fontWeight: 500, height: '40px', padding: '0px 16px', transition: 'all 0.2s' }
+                    }
+                  >
+                    {servers.includes('IDA,1433') ? 'Đã cấp quyền' : 'Cấp quyền'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

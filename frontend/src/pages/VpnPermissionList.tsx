@@ -133,7 +133,9 @@ export default function VpnPermissionList() {
                   <th style={{ width: 240 }}>Họ tên</th>
                   <th style={{ width: 200 }}>Công ty</th>
                   <th style={{ width: 200 }}>Phòng Ban</th>
-                  <th style={{ width: 300 }}>Thao tác (Quyền truy cập VPN)</th>
+                  <th style={{ width: 100, textAlign: 'center' }}>Dego</th>
+                  <th style={{ width: 100, textAlign: 'center' }}>IDA</th>
+                  <th style={{ width: 100, textAlign: 'center' }}>IDA,1433</th>
                   <th style={{ width: 60, textAlign: 'center' }}>Sửa</th>
                 </tr>
               </thead>
@@ -155,25 +157,30 @@ export default function VpnPermissionList() {
                       </td>
                       <td>{item.org_unit_names?.length > 0 ? item.org_unit_names.join(', ') : '- -'}</td>
                       <td>{item.department_names?.length > 0 ? item.department_names.join(', ') : '- -'}</td>
-                      <td>
-                        <div className="dis-flex align-items-center gap-16">
-                          <label className="dis-flex align-items-center gap-8 cursor-pointer" style={{ margin: 0 }}>
+                      <td style={{ textAlign: 'center' }}>
+                        <div className="dis-flex justify-content-center">
+                          <label className="cursor-pointer" style={{ margin: 0 }}>
                             <div className={`switch-toggle ${servers.includes('Dego') ? 'active' : ''}`} onClick={() => handleToggleVpn(item.id, 'Dego', !servers.includes('Dego'), access)}>
                               <div className="switch-knob"></div>
                             </div>
-                            <span style={{ fontSize: 13, fontWeight: 500, color: servers.includes('Dego') ? '#0f172a' : '#64748b' }}>Dego</span>
                           </label>
-                          <label className="dis-flex align-items-center gap-8 cursor-pointer" style={{ margin: 0 }}>
+                        </div>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <div className="dis-flex justify-content-center">
+                          <label className="cursor-pointer" style={{ margin: 0 }}>
                             <div className={`switch-toggle ${servers.includes('IDA') ? 'active' : ''}`} onClick={() => handleToggleVpn(item.id, 'IDA', !servers.includes('IDA'), access)}>
                               <div className="switch-knob"></div>
                             </div>
-                            <span style={{ fontSize: 13, fontWeight: 500, color: servers.includes('IDA') ? '#0f172a' : '#64748b' }}>IDA</span>
                           </label>
-                          <label className="dis-flex align-items-center gap-8 cursor-pointer" style={{ margin: 0 }}>
+                        </div>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <div className="dis-flex justify-content-center">
+                          <label className="cursor-pointer" style={{ margin: 0 }}>
                             <div className={`switch-toggle ${servers.includes('IDA,1433') ? 'active' : ''}`} onClick={() => handleToggleVpn(item.id, 'IDA,1433', !servers.includes('IDA,1433'), access)}>
                               <div className="switch-knob"></div>
                             </div>
-                            <span style={{ fontSize: 13, fontWeight: 500, color: servers.includes('IDA,1433') ? '#0f172a' : '#64748b' }}>IDA,1433</span>
                           </label>
                         </div>
                       </td>
@@ -187,7 +194,7 @@ export default function VpnPermissionList() {
                 })}
                 {filteredSubjects.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="text-center py-20 text-muted">Không có dữ liệu</td>
+                    <td colSpan={8} className="text-center py-20 text-muted">Không có dữ liệu</td>
                   </tr>
                 )}
               </tbody>
