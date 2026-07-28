@@ -325,6 +325,52 @@ export default function CompanyInfo() {
             </div>
           </div>
         </div>
+        <div className="company-blocks-grid mt-24">
+          {/* 5. Thao tác khác */}
+          <div className="company-card info-section">
+            <div className="section-header blue">
+              <i className="ti ti-apps"></i>
+              <h3>Thao tác khác</h3>
+            </div>
+            <div className="section-body p-16 dis-flex gap-12 flex-wrap">
+              <button type="button" className="btn outline err">
+                <i className="ti ti-trash mr-4"></i> Xóa công ty
+              </button>
+              <button type="button" className="btn outline">
+                <i className="ti ti-printer mr-4"></i> In thông tin
+              </button>
+              <button type="button" className="btn outline">
+                <i className="ti ti-file-export mr-4"></i> Xuất dữ liệu
+              </button>
+            </div>
+          </div>
+
+          {/* 6. Lịch sử chỉnh sửa */}
+          <div className="company-card info-section">
+            <div className="section-header purple">
+              <i className="ti ti-history"></i>
+              <h3>Lịch sử chỉnh sửa</h3>
+            </div>
+            <div className="section-body grid-2">
+              <div className="field">
+                <label>Người tạo</label>
+                <input type="text" className="form-control" disabled value={formData.created_by || 'Hệ thống'} />
+              </div>
+              <div className="field">
+                <label>Ngày tạo</label>
+                <input type="text" className="form-control" disabled value={formData.created_at ? new Date(formData.created_at).toLocaleString('vi-VN') : ''} />
+              </div>
+              <div className="field">
+                <label>Người sửa cuối</label>
+                <input type="text" className="form-control" disabled value={formData.updated_by || 'Chưa cập nhật'} />
+              </div>
+              <div className="field">
+                <label>Thời gian sửa cuối</label>
+                <input type="text" className="form-control" disabled value={formData.updated_at ? new Date(formData.updated_at).toLocaleString('vi-VN') : ''} />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
