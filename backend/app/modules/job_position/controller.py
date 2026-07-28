@@ -174,6 +174,19 @@ def get_job_positions(
         out.append(obj)
     return success(out)
 
+@router.get("/job-positions/next-code")
+def get_next_job_position_code(user=Depends(require("job_position", "read")), db: Session = Depends(get_db)):
+    last_position = db.query(JobPosition).filter(JobPosition.position_code.like("VTR%")).order_by(JobPosition.position_code.desc()).first()
+    if not last_position:
+        return success({"next_code": "VTR001"})
+    
+    import re
+    match = re.search(r'VTR(\d+)', last_position.position_code)
+    if match:
+        next_num = int(match.group(1)) + 1
+        return success({"next_code": f"VTR{next_num:03d}"})
+    return success({"next_code": "VTR001"})
+
 @router.get("/job-positions/check-code")
 def check_job_position_code(code: str, user=Depends(require("job_position", "read")), db: Session = Depends(get_db)):
     exists = db.query(JobPosition).filter(JobPosition.position_code == code).first() is not None

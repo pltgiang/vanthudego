@@ -41,6 +41,11 @@ export default function JobPositionForm() {
             toast.error('Không tìm thấy vị trí')
             navigate('/job-positions')
           }
+        } else {
+          const nextCodeRes = await api.get('/api/v1/system/job-positions/next-code')
+          if (nextCodeRes.data.data?.next_code) {
+            setForm((prev: any) => ({ ...prev, position_code: nextCodeRes.data.data.next_code }))
+          }
         }
       } catch (err: any) {
         toast.error(err.message)
