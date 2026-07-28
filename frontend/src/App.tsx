@@ -23,6 +23,7 @@ import JobPositionForm from './pages/JobPositionForm'
 import DepartmentForm from './pages/DepartmentForm'
 import JobTitleForm from './pages/JobTitleForm'
 import SubjectList from './pages/SubjectList'
+import VpnPermissionList from './pages/VpnPermissionList'
 import DocumentList from './pages/DocumentList'
 import DocumentSettings from './pages/DocumentSettings'
 import DocumentDetail from './pages/DocumentDetail'
@@ -64,6 +65,7 @@ export default function App() {
             <Route path="job-titles/new" element={<JobTitleForm />} />
             <Route path="job-titles/:id" element={<JobTitleForm />} />
             <Route path="subjects" element={<SubjectList />} />
+            <Route path="vpn" element={<VpnPermissionList />} />
             <Route path="roles/new" element={<UserPermissionDetail />} />
             <Route path="roles/:id" element={<UserPermissionDetail />} />
             

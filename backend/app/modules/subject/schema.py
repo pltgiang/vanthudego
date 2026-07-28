@@ -33,6 +33,8 @@ class SubjectBase(BaseModel):
     
     # RBAC
     role_ids: Optional[List[int]] = []
+    
+    vpn_access: Optional[str] = ""
 
 class SubjectCreate(SubjectBase):
     pass

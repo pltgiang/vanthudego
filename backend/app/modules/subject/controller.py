@@ -141,6 +141,26 @@ def update_subject(id: int, data: SubjectUpdate, user=Depends(require("subject",
     record(db, user.id, "subject", db_obj.id, "UPDATE_SUBJECT", f"Sửa đối tượng {db_obj.subject_code}")
     return success({"id": db_obj.id}, "Cập nhật thành công")
 
+from pydantic import BaseModel
+class VpnUpdate(BaseModel):
+    vpn_access: str
+
+@router.patch("/{id}/vpn")
+def update_vpn_access(id: int, data: VpnUpdate, user=Depends(require("subject", "write")), db: Session = Depends(get_db)):
+    db_obj = db.query(Subject).filter(Subject.id == id).first()
+    from fastapi import HTTPException
+    import json
+    if not db_obj:
+        raise HTTPException(404, "Không tìm thấy nhân sự")
+    old_access = db_obj.vpn_access or ""
+    db_obj.vpn_access = data.vpn_access
+    db.commit()
+    
+    changes = {"Quyền truy cập VPN": data.vpn_access}
+    record(db, user.id, "subject", db_obj.id, "update", json.dumps(changes, ensure_ascii=False))
+    
+    return success({"id": db_obj.id}, "Cập nhật quyền VPN thành công")
+
 @router.delete("/{id}")
 def delete_subject(id: int, user=Depends(require("subject", "delete")), db: Session = Depends(get_db)):
     service.delete_subject(db, id)

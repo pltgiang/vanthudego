@@ -29,6 +29,7 @@ class Subject(Base, AuditMixin):
     resign_date: Mapped[date] = mapped_column(Date, nullable=True)
     account_phone: Mapped[str] = mapped_column(String(20), nullable=True, unique=True, index=True)
     account_email: Mapped[str] = mapped_column(String(255), nullable=True, unique=True, index=True)
+    vpn_access: Mapped[str] = mapped_column(String(255), default="")
     
     # MISA ID fields or auth fields
     password_hash: Mapped[str] = mapped_column(String(255), default="")
