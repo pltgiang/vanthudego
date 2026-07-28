@@ -51,7 +51,7 @@ export default function SubjectDetail() {
         ]);
         setDeptOptions(deptRes.data.data?.items?.map((x: any) => ({ label: x.name, value: x.id })) || []);
         setTitleOptions(titleRes.data.data?.map((x: any) => ({ label: x.title_name, value: x.id })) || []);
-        setCompanyOptions(compRes.data.data?.items?.map((x: any) => ({ label: x.name, value: x.id })) || []);
+        setCompanyOptions(compRes.data.data?.items?.map((x: any) => ({ label: x.name, value: x.id, image: x.logo })) || []);
         setManagers(mngRes.data.data || []);
       } catch (e) {
         console.error(e);
@@ -311,6 +311,7 @@ export default function SubjectDetail() {
                   value={form.company_ids || []}
                   onChange={v => handleChange('company_ids', v)}
                   placeholder="Chọn công ty"
+                  variant="avatars"
                 />
               </div>
               <div className="field">

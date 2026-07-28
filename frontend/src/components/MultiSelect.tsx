@@ -100,7 +100,7 @@ export default function MultiSelect({ options, value = [], onChange, placeholder
         )}
 
         {variant === 'default' && selectedOptions.map(o => (
-          <div key={o.value} className="badge bg-light text-dark dis-flex align-items-center gap-4" style={{ padding: '2px 8px' }}>
+          <div key={o.value} className="badge dis-flex align-items-center gap-4" style={{ padding: '4px 8px', border: '1px solid #0ea5e9', backgroundColor: '#f0f9ff', color: '#0369a1', fontWeight: 600 }}>
             {o.image && <img src={o.image} alt="" style={{ width: 16, height: 16, borderRadius: '50%', objectFit: 'cover' }} />}
             {o.label}
             <i className="ti ti-x cursor-pointer" onClick={(e) => { e.stopPropagation(); handleToggle(o.value) }} style={{ fontSize: 11 }} />
