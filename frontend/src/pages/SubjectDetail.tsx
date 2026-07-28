@@ -99,8 +99,8 @@ export default function SubjectDetail() {
   const handleChange = (f: string, v: any) => setForm((prev: any) => ({ ...prev, [f]: v }));
 
   const handleSave = async (close: boolean = false) => {
-    if (!form.subject_code || !form.subject_name || !form.org_unit_ids?.length) {
-      toast.error('Vui lòng nhập các thông tin bắt buộc (Mã, Tên, Đơn vị)');
+    if (!form.subject_code || !form.subject_name) {
+      toast.error('Vui lòng nhập các thông tin bắt buộc (Mã, Tên)');
       return;
     }
 
@@ -186,7 +186,36 @@ export default function SubjectDetail() {
         {isEdit && (
           <div className="company-card bg-white mb-24" style={{ padding: 24 }}>
             <div className="dis-flex align-items-center gap-24">
-              <div className="avatar-placeholder flex-shrink-0" style={{ width: 100, height: 100, borderRadius: 8, backgroundColor: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e2e8f0' }}>
+              <div 
+                className="avatar-placeholder flex-shrink-0" 
+                style={{ width: 100, height: 100, borderRadius: 8, backgroundColor: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e2e8f0', cursor: 'pointer', position: 'relative' }}
+                onClick={() => document.getElementById('avatar-upload')?.click()}
+                title="Nhấn để thay đổi ảnh đại diện"
+              >
+                <input 
+                  id="avatar-upload" 
+                  type="file" 
+                  style={{ display: 'none' }} 
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const formData = new FormData();
+                    formData.append('entity', 'subject_avatar');
+                    formData.append('files', file);
+                    try {
+                      const res = await api.post('/api/v1/system/attachments/upload-file', formData, {
+                        headers: { 'Content-Type': 'multipart/form-data' }
+                      });
+                      if (res.data.success && res.data.data.length > 0) {
+                        handleChange('avatar', res.data.data[0].url);
+                        toast.success('Tải lên ảnh đại diện thành công');
+                      }
+                    } catch (err: any) {
+                      toast.error('Lỗi tải lên: ' + (err.response?.data?.message || err.message));
+                    }
+                  }}
+                />
                 {form.avatar ? (
                   <img src={form.avatar} alt="Avatar" style={{ width: '100%', height: '100%', borderRadius: 8, objectFit: 'cover' }} />
                 ) : displayName !== 'HỌ VÀ TÊN' ? (
@@ -285,15 +314,6 @@ export default function SubjectDetail() {
                   />
                 </div>
               </div>
-              <div className="field col-span-2">
-                <label>Đơn vị công tác <span className="req">*</span></label>
-                <MultiSelect 
-                  options={orgOptions}
-                  value={form.org_unit_ids || []}
-                  onChange={v => handleChange('org_unit_ids', v)}
-                  placeholder="Chọn đơn vị"
-                />
-              </div>
               <div className="field">
                 <label>Phòng ban</label>
                 <MultiSelect 
@@ -360,9 +380,12 @@ export default function SubjectDetail() {
               </div>
               <div className="field col-span-2">
                 <label>Trạng thái Tài khoản</label>
-                <div style={{ fontSize: 14, fontWeight: 600, color: form.user_status === 'ACTIVE' ? '#16A34A' : form.user_status === 'LOCKED' ? '#DC2626' : '#6B7280' }}>
-                  {form.user_status === 'ACTIVE' ? 'Đang hoạt động' : form.user_status === 'LOCKED' ? 'Đã khóa' : form.user_status === 'INACTIVE' ? 'Chưa kích hoạt' : form.user_status}
-                </div>
+                <select className="form-control" value={form.user_status || 'ACTIVE'} onChange={e => handleChange('user_status', e.target.value)}>
+                  <option value="ACTIVE">Đang hoạt động</option>
+                  <option value="PENDING">Chờ xác nhận (Chưa kích hoạt)</option>
+                  <option value="INACTIVE">Ngừng hoạt động</option>
+                  <option value="LOCKED">Đã khóa</option>
+                </select>
               </div>
             </div>
           </div>

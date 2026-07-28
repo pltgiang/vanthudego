@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from app.modules.subject.model import Subject, SubjectOrgUnit, SubjectRole, SubjectDepartment, SubjectJobTitle
+from app.modules.subject.model import Subject, SubjectCompany, SubjectRole, SubjectDepartment, SubjectJobTitle
 from app.modules.subject.schema import SubjectCreate, SubjectUpdate
 from app.core.auth import hash_password
 
@@ -27,7 +27,8 @@ def create_subject(db: Session, data: SubjectCreate) -> Subject:
         official_date=data.official_date,
         resign_date=data.resign_date,
         job_position_id=data.job_position_id,
-        direct_manager_id=data.direct_manager_id
+        direct_manager_id=data.direct_manager_id,
+        avatar=data.avatar
     )
     
     # Generate default password based on email or phone
@@ -37,9 +38,9 @@ def create_subject(db: Session, data: SubjectCreate) -> Subject:
     db.add(db_obj)
     db.flush()
     
-    if data.org_unit_ids:
-        for ou_id in data.org_unit_ids:
-            db.add(SubjectOrgUnit(subject_id=db_obj.id, org_unit_id=ou_id))
+    if data.company_ids:
+        for c_id in data.company_ids:
+            db.add(SubjectCompany(subject_id=db_obj.id, company_id=c_id))
             
     if data.department_ids:
         for d_id in data.department_ids:
@@ -90,11 +91,12 @@ def update_subject(db: Session, id: int, data: SubjectUpdate) -> Subject:
     db_obj.resign_date = data.resign_date
     db_obj.job_position_id = data.job_position_id
     db_obj.direct_manager_id = data.direct_manager_id
+    db_obj.avatar = data.avatar
     
-    db.query(SubjectOrgUnit).filter(SubjectOrgUnit.subject_id == id).delete()
-    if data.org_unit_ids:
-        for ou_id in data.org_unit_ids:
-            db.add(SubjectOrgUnit(subject_id=db_obj.id, org_unit_id=ou_id))
+    db.query(SubjectCompany).filter(SubjectCompany.subject_id == id).delete()
+    if data.company_ids:
+        for c_id in data.company_ids:
+            db.add(SubjectCompany(subject_id=db_obj.id, company_id=c_id))
             
     db.query(SubjectDepartment).filter(SubjectDepartment.subject_id == id).delete()
     if data.department_ids:

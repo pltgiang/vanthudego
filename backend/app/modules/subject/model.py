@@ -39,6 +39,9 @@ class Subject(Base, AuditMixin):
     employee_status: Mapped[str] = mapped_column(String(20), default="WORKING") # WORKING, RESIGNED
 
     # Relationships
+    companies: Mapped[List["SubjectCompany"]] = relationship(
+        back_populates="subject", cascade="all, delete-orphan"
+    )
     org_units: Mapped[List["SubjectOrgUnit"]] = relationship(
         back_populates="subject", cascade="all, delete-orphan"
     )
@@ -65,6 +68,21 @@ class Subject(Base, AuditMixin):
     )
 
 from sqlalchemy import ForeignKey
+
+class SubjectCompany(Base):
+    """Bảng trung gian liên kết Đối tượng và Công ty (Pháp nhân)"""
+    __tablename__ = "tab_subject_company"
+
+    subject_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("tab_subject.id"), primary_key=True)
+    company_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+
+    subject: Mapped["Subject"] = relationship(back_populates="companies")
+    company: Mapped["Company"] = relationship(
+        primaryjoin="SubjectCompany.company_id == Company.id",
+        foreign_keys="[SubjectCompany.company_id]",
+        viewonly=True
+    )
+
 class SubjectOrgUnit(Base):
     """Bảng trung gian liên kết Đối tượng và Đơn vị công tác"""
     __tablename__ = "tab_subject_org_unit"

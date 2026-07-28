@@ -132,7 +132,7 @@ export default function VpnPermissionDetail() {
               </div>
               <div className="field col-span-2">
                 <label>Công ty</label>
-                <input type="text" value={subject.org_unit_names?.join(', ') || ''} disabled style={{ backgroundColor: '#f8fafc', color: '#64748b' }} />
+                <input type="text" value={subject.company_names?.join(', ') || ''} disabled style={{ backgroundColor: '#f8fafc', color: '#64748b' }} />
               </div>
               <div className="field col-span-2">
                 <label>Phòng ban</label>

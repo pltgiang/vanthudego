@@ -17,7 +17,7 @@ router = APIRouter(prefix="/api/v1/system/subjects", tags=["subject"])
 def get_subjects(
     status: Optional[str] = None,
     q: Optional[str] = None,
-    org_unit_id: Optional[int] = None,
+    company_id: Optional[int] = None,
     department_id: Optional[int] = None,
     role_id: Optional[int] = None,
     is_employee: Optional[bool] = None,
@@ -47,8 +47,8 @@ def get_subjects(
             )
         )
         
-    if org_unit_id:
-        query = query.filter(Subject.org_units.any(org_unit_id=org_unit_id))
+    if company_id:
+        query = query.filter(Subject.companies.any(company_id=company_id))
         
     if department_id:
         query = query.filter(Subject.departments.any(department_id=department_id))
@@ -72,6 +72,7 @@ def get_subjects(
             "user_status": item.user_status,
             "employee_status": item.employee_status,
             "vpn_access": item.vpn_access,
+            "avatar": item.avatar,
             "join_date": item.join_date,
             "probation_date": item.probation_date,
             "official_date": item.official_date,
@@ -80,7 +81,8 @@ def get_subjects(
             "job_position_name": item.job_position.position_name if item.job_position else "",
             "direct_manager_id": item.direct_manager_id,
             "direct_manager_name": item.direct_manager.subject_name if item.direct_manager else "",
-            "org_unit_ids": [ou.org_unit_id for ou in item.org_units],
+            "company_ids": [c.company_id for c in item.companies],
+            "company_names": [c.company.name for c in item.companies if getattr(c, "company", None)],
             "department_ids": [d.department_id for d in item.departments],
             "department_names": [d.department.name for d in item.departments if getattr(d, "department", None)],
             "job_title_ids": [t.job_title_id for t in item.job_titles],
@@ -114,6 +116,7 @@ def get_subject(id: int, user=Depends(require("subject", "read")), db: Session =
         "user_status": item.user_status,
         "employee_status": item.employee_status,
         "vpn_access": item.vpn_access,
+        "avatar": item.avatar,
         "join_date": item.join_date,
         "probation_date": item.probation_date,
         "official_date": item.official_date,
@@ -122,7 +125,8 @@ def get_subject(id: int, user=Depends(require("subject", "read")), db: Session =
         "job_position_name": item.job_position.position_name if item.job_position else "",
         "direct_manager_id": item.direct_manager_id,
         "direct_manager_name": item.direct_manager.subject_name if item.direct_manager else "",
-        "org_unit_ids": [ou.org_unit_id for ou in item.org_units],
+        "company_ids": [c.company_id for c in item.companies],
+        "company_names": [c.company.name for c in item.companies if getattr(c, "company", None)],
         "department_ids": [d.department_id for d in item.departments],
         "department_names": [d.department.name for d in item.departments if getattr(d, "department", None)],
         "job_title_ids": [t.job_title_id for t in item.job_titles],

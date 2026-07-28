@@ -54,7 +54,7 @@ export default function VpnPermissionList() {
     }
   }
 
-  const companies = Array.from(new Set(subjects.flatMap(s => s.org_unit_names || []))).filter(Boolean) as string[]
+  const companies = Array.from(new Set(subjects.flatMap(s => s.company_names || []))).filter(Boolean) as string[]
   const departments = Array.from(new Set(subjects.flatMap(s => s.department_names || []))).filter(Boolean) as string[]
 
   const filteredSubjects = subjects.filter(s => {
@@ -62,7 +62,7 @@ export default function VpnPermissionList() {
     const matchSearch = (s.subject_name || '').toLowerCase().includes(term) ||
                         (s.subject_code || '').toLowerCase().includes(term)
     
-    const matchCompany = filterCompany === 'ALL' || (s.org_unit_names || []).includes(filterCompany)
+    const matchCompany = filterCompany === 'ALL' || (s.company_names || []).includes(filterCompany)
     const matchDept = filterDept === 'ALL' || (s.department_names || []).includes(filterDept)
     
     const servers = s.vpn_access ? s.vpn_access.split(',').map((s: string) => s.trim()) : []
@@ -155,7 +155,7 @@ export default function VpnPermissionList() {
                           <span className="font-weight-bold" style={{ fontSize: 13 }}>{item.subject_name}</span>
                         </div>
                       </td>
-                      <td>{item.org_unit_names?.length > 0 ? item.org_unit_names.join(', ') : '- -'}</td>
+                      <td>{item.company_names?.length > 0 ? item.company_names.join(', ') : '- -'}</td>
                       <td>{item.department_names?.length > 0 ? item.department_names.join(', ') : '- -'}</td>
                       <td style={{ textAlign: 'center' }}>
                         <div className="dis-flex justify-content-center">

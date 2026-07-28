@@ -25,7 +25,7 @@ class SubjectBase(BaseModel):
     resign_date: Optional[date] = None
     
     # Links
-    org_unit_ids: Optional[List[int]] = []
+    company_ids: Optional[List[int]] = []
     department_ids: Optional[List[int]] = []
     job_title_ids: Optional[List[int]] = []
     job_position_id: Optional[int] = None
@@ -35,6 +35,7 @@ class SubjectBase(BaseModel):
     role_ids: Optional[List[int]] = []
     
     vpn_access: Optional[str] = ""
+    avatar: Optional[str] = ""
 
 class SubjectCreate(SubjectBase):
     pass
@@ -44,7 +45,7 @@ class SubjectUpdate(SubjectBase):
 
 class SubjectOut(SubjectBase):
     id: int
-    org_unit_ids: List[int]
+    company_ids: List[int]
     department_ids: List[int]
     job_title_ids: List[int]
     role_ids: List[int]
