@@ -59,8 +59,8 @@ export default function AdvancedSecurity() {
             </div>
             
             <div className="section-body">
-              <div className="dis-flex align-items-start mb-24" style={{ gap: '16px' }}>
-                <div className={`switch-toggle ${ipRestrict ? 'active' : ''}`} style={{ cursor: 'pointer', flexShrink: 0, marginTop: 2 }} onClick={() => setIpRestrict(!ipRestrict)}>
+              <div className="dis-flex align-items-center mb-32" style={{ gap: '16px' }}>
+                <div className={`switch-toggle ${ipRestrict ? 'active' : ''}`} style={{ cursor: 'pointer', flexShrink: 0 }} onClick={() => setIpRestrict(!ipRestrict)}>
                   <div className="switch-knob"></div>
                 </div>
                 <div>
@@ -82,8 +82,8 @@ export default function AdvancedSecurity() {
                 </div>
               )}
 
-              <div className="dis-flex align-items-start mb-24" style={{ gap: '16px' }}>
-                <div className={`switch-toggle ${timeRestrict ? 'active' : ''}`} style={{ cursor: 'pointer', flexShrink: 0, marginTop: 2 }} onClick={() => setTimeRestrict(!timeRestrict)}>
+              <div className="dis-flex align-items-center mb-32" style={{ gap: '16px' }}>
+                <div className={`switch-toggle ${timeRestrict ? 'active' : ''}`} style={{ cursor: 'pointer', flexShrink: 0 }} onClick={() => setTimeRestrict(!timeRestrict)}>
                   <div className="switch-knob"></div>
                 </div>
                 <div>
