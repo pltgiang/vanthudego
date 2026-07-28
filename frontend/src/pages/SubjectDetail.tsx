@@ -17,6 +17,7 @@ export default function SubjectDetail() {
   const [orgOptions, setOrgOptions] = useState<any[]>([]);
   const [deptOptions, setDeptOptions] = useState<any[]>([]);
   const [titleOptions, setTitleOptions] = useState<any[]>([]);
+  const [companyOptions, setCompanyOptions] = useState<any[]>([]);
   const [managers, setManagers] = useState<any[]>([]);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
 
@@ -42,15 +43,17 @@ export default function SubjectDetail() {
   useEffect(() => {
     const initData = async () => {
       try {
-        const [orgRes, deptRes, titleRes, mngRes] = await Promise.all([
+        const [orgRes, deptRes, titleRes, mngRes, compRes] = await Promise.all([
           api.get('/api/v1/system/org-units'),
           api.get('/api/v1/system/departments'),
           api.get('/api/v1/system/job-titles'),
-          api.get('/api/v1/system/subjects?is_employee=true')
+          api.get('/api/v1/system/subjects?is_employee=true'),
+          api.get('/api/companies')
         ]);
         setOrgOptions(orgRes.data.data?.map((x: any) => ({ label: x.org_unit_name, value: x.id })) || []);
         setDeptOptions(deptRes.data.data?.map((x: any) => ({ label: x.department_name, value: x.id })) || []);
         setTitleOptions(titleRes.data.data?.map((x: any) => ({ label: x.title_name, value: x.id })) || []);
+        setCompanyOptions(compRes.data.data?.items?.map((x: any) => ({ label: x.name, value: x.id })) || []);
         setManagers(mngRes.data.data || []);
       } catch (e) {
         console.error(e);
@@ -154,6 +157,9 @@ export default function SubjectDetail() {
 
   if (loading) return <div className="p-4">Đang tải...</div>;
 
+  const displayName = form.subject_name || 'HỌ VÀ TÊN';
+  const displayEmail = form.account_email || form.contact_email || 'Chưa cập nhật';
+
   return (
     <div className="company-info-page h-100">
       <div className="topbar dis-flex align-items-center border-bottom">
@@ -161,7 +167,7 @@ export default function SubjectDetail() {
           <button className="btn ghost icon-btn" onClick={() => navigate('/subjects')}>
             <i className="ti ti-arrow-left"></i>
           </button>
-          <span>{isEdit ? `Chỉnh sửa nhân sự: ${form.subject_name}` : 'Thêm mới nhân sự'}</span>
+          <span>{isEdit ? `Chỉnh sửa thông tin: ${form.subject_name}` : 'Thêm mới nhân sự'}</span>
         </div>
         <div className="actions dis-flex">
           <button type="button" className="btn ghost" onClick={() => navigate('/subjects')} style={{ background: 'rgb(241, 245, 249)', color: 'rgb(71, 85, 105)', border: 'none', marginRight: '12px' }}>
@@ -177,6 +183,35 @@ export default function SubjectDetail() {
       </div>
 
       <div className="content scrollable company-blocks-layout">
+        {isEdit && (
+          <div className="company-card bg-white mb-24" style={{ padding: 24 }}>
+            <div className="dis-flex align-items-center gap-24">
+              <div className="avatar-placeholder flex-shrink-0" style={{ width: 100, height: 100, borderRadius: 8, backgroundColor: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e2e8f0' }}>
+                {form.avatar ? (
+                  <img src={form.avatar} alt="Avatar" style={{ width: '100%', height: '100%', borderRadius: 8, objectFit: 'cover' }} />
+                ) : displayName !== 'HỌ VÀ TÊN' ? (
+                  <span style={{ fontSize: 32, fontWeight: 'bold', color: '#64748b' }}>
+                    {displayName.charAt(0).toUpperCase()}
+                  </span>
+                ) : (
+                  <i className="ti ti-user" style={{ fontSize: 40, color: '#cbd5e1' }} />
+                )}
+              </div>
+              <div>
+                <h3 className="mb-12" style={{ fontSize: 20, fontWeight: 700, color: '#1e293b', textTransform: 'uppercase', margin: '0 0 12px 0' }}>{displayName}</h3>
+                <div className="dis-flex align-items-center gap-12">
+                  <span className="badge" style={{ backgroundColor: '#e0f2fe', color: '#0369a1', fontSize: 11, padding: '4px 12px', borderRadius: 100, fontWeight: 600, textTransform: 'uppercase' }}>
+                    Email: {displayEmail}
+                  </span>
+                  <span className="badge" style={{ backgroundColor: form.user_status === 'ACTIVE' ? '#dcfce7' : '#f1f5f9', color: form.user_status === 'ACTIVE' ? '#15803d' : '#475569', fontSize: 11, padding: '4px 12px', borderRadius: 100, fontWeight: 600, textTransform: 'uppercase' }}>
+                    {form.user_status === 'ACTIVE' ? 'Đang hoạt động' : 'Ngừng hoạt động'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="company-blocks-grid">
           
           {/* 1. Thông tin chung */}
@@ -186,7 +221,7 @@ export default function SubjectDetail() {
               <h3>Thông tin Chung</h3>
             </div>
             <div className="section-body grid-2">
-              <div className="field col-span-2 mb-0">
+              <div className="field col-span-2" style={{ display: 'none' }}>
                 <label className="dis-flex align-items-center gap-8 cursor-pointer">
                   <input type="checkbox" className="react-checkbox" checked={form.is_employee} onChange={e => handleChange('is_employee', e.target.checked)} />
                   <span style={{ fontWeight: 500, color: '#0f172a' }}>Là nhân viên công ty</span>
@@ -239,6 +274,17 @@ export default function SubjectDetail() {
               <h3>Thông tin Công việc</h3>
             </div>
             <div className="section-body grid-2">
+              <div className="field col-span-2">
+                <label>Công ty</label>
+                <div style={{ borderRadius: '100px', overflow: 'hidden' }}>
+                  <MultiSelect 
+                    options={companyOptions}
+                    value={form.company_ids || []}
+                    onChange={v => handleChange('company_ids', v)}
+                    placeholder="Chọn công ty"
+                  />
+                </div>
+              </div>
               <div className="field col-span-2">
                 <label>Đơn vị công tác <span className="req">*</span></label>
                 <MultiSelect 
