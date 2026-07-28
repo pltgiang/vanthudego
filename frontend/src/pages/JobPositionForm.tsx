@@ -135,6 +135,7 @@ export default function JobPositionForm() {
                   value={form.company_ids || []}
                   onChange={v => handleChange('company_ids', v)}
                   placeholder="Chọn công ty (có thể chọn nhiều)"
+                  variant="avatars"
                 />
               </div>
             </div>

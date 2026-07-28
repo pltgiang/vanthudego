@@ -6,11 +6,12 @@ export type Option = {
   image?: string
 }
 
-export default function MultiSelect({ options, value = [], onChange, placeholder = "Chọn..." }: { 
+export default function MultiSelect({ options, value = [], onChange, placeholder = "Chọn...", variant = "default" }: { 
   options: Option[], 
   value: (string | number)[], 
   onChange: (val: (string | number)[]) => void,
-  placeholder?: string
+  placeholder?: string,
+  variant?: 'default' | 'avatars'
 }) {
   const [open, setOpen] = useState(false)
   const [q, setQ] = useState('')
@@ -41,14 +42,45 @@ export default function MultiSelect({ options, value = [], onChange, placeholder
     <div className="multi-select" ref={ref} style={{ position: 'relative' }}>
       <div 
         className="form-control dis-flex align-items-center flex-wrap" 
-        style={{ minHeight: 38, height: 'auto', padding: '4px 8px', gap: 4, cursor: 'text' }}
+        style={{ minHeight: 40, height: 'auto', padding: '4px 8px', gap: 4, cursor: 'text' }}
         onClick={() => setOpen(true)}
       >
         {selectedOptions.length === 0 && !q && (
           <div style={{ color: '#94a3b8', padding: '4px' }}>{placeholder}</div>
         )}
         
-        {selectedOptions.map(o => (
+        {variant === 'avatars' && selectedOptions.length > 0 && (
+          <div className="dis-flex align-items-center" style={{ marginLeft: 4 }}>
+            {selectedOptions.slice(0, 5).map((o, idx) => (
+              <img 
+                key={o.value}
+                src={o.image || 'https://i.pravatar.cc/150'} 
+                alt={o.label} 
+                title={o.label}
+                style={{ 
+                  width: 28, height: 28, borderRadius: '50%', 
+                  border: '2px solid #fff', 
+                  marginLeft: idx === 0 ? 0 : -10, 
+                  zIndex: 10 - idx, 
+                  objectFit: 'cover' 
+                }} 
+              />
+            ))}
+            {selectedOptions.length > 5 && (
+              <div style={{ 
+                width: 28, height: 28, borderRadius: '50%', 
+                border: '2px solid #fff', marginLeft: -10, zIndex: 0, 
+                backgroundColor: '#e2e8f0', color: '#475569', 
+                display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                fontSize: 12, fontWeight: 600 
+              }}>
+                +{selectedOptions.length - 5}
+              </div>
+            )}
+          </div>
+        )}
+
+        {variant === 'default' && selectedOptions.map(o => (
           <div key={o.value} className="badge bg-light text-dark dis-flex align-items-center gap-4" style={{ padding: '2px 8px' }}>
             {o.image && <img src={o.image} alt="" style={{ width: 16, height: 16, borderRadius: '50%', objectFit: 'cover' }} />}
             {o.label}
@@ -62,6 +94,8 @@ export default function MultiSelect({ options, value = [], onChange, placeholder
           onChange={e => { setQ(e.target.value); setOpen(true) }}
           style={{ border: 'none', outline: 'none', background: 'transparent', flex: 1, minWidth: 60, padding: 4 }}
         />
+
+        {variant === 'avatars' && <i className="ti ti-chevron-down" style={{ marginLeft: 'auto', color: '#94a3b8', marginRight: 4 }}></i>}
       </div>
 
       {open && (
