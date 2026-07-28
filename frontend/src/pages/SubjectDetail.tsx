@@ -104,11 +104,21 @@ export default function SubjectDetail() {
 
     try {
       setSaving(true);
+      
+      // Sanitize payload for FastAPI validation
+      const payload = { ...form };
+      ['probation_date', 'official_date', 'resign_date', 'join_date'].forEach(k => {
+        if (!payload[k]) payload[k] = null;
+      });
+      ['job_position_id', 'direct_manager_id'].forEach(k => {
+        if (payload[k] === '') payload[k] = null;
+      });
+
       if (isEdit) {
-        await api.put(`/api/v1/system/subjects/${id}`, form);
+        await api.put(`/api/v1/system/subjects/${id}`, payload);
         toast.success('Cập nhật nhân sự thành công');
       } else {
-        await api.post('/api/v1/system/subjects', form);
+        await api.post('/api/v1/system/subjects', payload);
         toast.success('Thêm nhân sự thành công');
       }
       
