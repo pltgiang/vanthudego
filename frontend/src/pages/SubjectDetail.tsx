@@ -176,7 +176,7 @@ export default function SubjectDetail() {
         </div>
       </div>
 
-      <div className="content scrollable company-blocks-layout" style={{ padding: '24px' }}>
+      <div className="content scrollable company-blocks-layout">
         <div className="company-blocks-grid">
           
           {/* 1. Thông tin chung */}
