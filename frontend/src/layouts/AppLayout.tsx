@@ -102,6 +102,13 @@ const NAV_GROUPS: NavGroup[] = [
         manage: true,
       },
       {
+        to: "/vpn",
+        label: "Phân quyền VPN",
+        icon: "ti-network",
+        entity: "setting",
+        manage: true,
+      },
+      {
         to: "/advanced-security",
         label: "Bảo mật nâng cao",
         icon: "ti-shield-lock",
