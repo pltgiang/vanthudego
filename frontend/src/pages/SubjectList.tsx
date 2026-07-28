@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { IconImport, IconExport } from '../components/Icons'
 import { api } from '../api/client'
-import MultiSelect from '../components/MultiSelect'
 import { toast } from '../components/toast'
 
 export default function SubjectList() {
-  const [showForm, setShowForm] = useState(false)
-  const [editingItem, setEditingItem] = useState<any>(null)
+  const navigate = useNavigate()
   const [visibleCols, setVisibleCols] = useState<string[]>(['name', 'phone', 'email', 'department', 'job_title', 'account_status'])
   const [colMenuOpen, setColMenuOpen] = useState(false)
   const [subjects, setSubjects] = useState<any[]>([])
@@ -26,9 +25,9 @@ export default function SubjectList() {
     fetchSubjects()
   }, [])
 
-  if (showForm) {
-    return <SubjectForm initial={editingItem} onClose={() => { setShowForm(false); setEditingItem(null) }} onSuccess={fetchSubjects} />
-  }
+  useEffect(() => {
+    fetchSubjects()
+  }, [])
 
   return (
     <div className="company-info-page h-100 dis-flex dis-flex-column">
@@ -41,7 +40,7 @@ export default function SubjectList() {
           <button className="btn ghost icon-btn" title="Xuất dữ liệu" style={{ borderRadius: 6, width: 36, height: 36, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <IconExport size={18} />
           </button>
-          <button className="btn btn-primary dis-flex align-items-center gap-8" style={{ borderRadius: 6, background: '#00aeef', borderColor: '#00aeef' }} onClick={() => { setEditingItem(null); setShowForm(true) }}>
+          <button className="btn btn-primary dis-flex align-items-center gap-8" style={{ borderRadius: 6, background: '#00aeef', borderColor: '#00aeef' }} onClick={() => navigate('/subjects/new')}>
             <i className="ti ti-plus" /> Thêm mới
           </button>
         </div>
@@ -133,6 +132,9 @@ export default function SubjectList() {
                   {visibleCols.includes('gender') && <td>{item.gender || '- -'}</td>}
                   {visibleCols.includes('address') && <td className="text-truncate" title={item.address} style={{ maxWidth: 200 }}>{item.address || '- -'}</td>}
                   <td className="text-right">
+                    <button className="btn ghost icon-btn" title="Chỉnh sửa" onClick={() => navigate(`/subjects/${item.id}`)} style={{ color: '#0ea5e9' }}>
+                      <i className="ti ti-edit"></i>
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -282,156 +284,6 @@ function SubjectForm({ initial, onClose, onSuccess }: { initial?: any, onClose: 
               </div>
               <div>
                 <h3 className="mb-12" style={{ fontSize: 20, fontWeight: 700, color: '#1e293b', textTransform: 'uppercase', margin: '0 0 12px 0' }}>{displayName}</h3>
-                <div className="dis-flex align-items-center gap-12">
-                  <span className="badge" style={{ backgroundColor: '#e0f2fe', color: '#0369a1', fontSize: 11, padding: '4px 12px', borderRadius: 100, fontWeight: 600, textTransform: 'uppercase' }}>
-                    Email: {displayEmail}
-                  </span>
-                  <span className="badge" style={{ backgroundColor: form.user_status === 'ACTIVE' ? '#dcfce7' : '#f1f5f9', color: form.user_status === 'ACTIVE' ? '#15803d' : '#475569', fontSize: 11, padding: '4px 12px', borderRadius: 100, fontWeight: 600, textTransform: 'uppercase' }}>
-                    {form.user_status === 'ACTIVE' ? 'Đang hoạt động' : 'Ngừng hoạt động'}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="company-card info-section bg-white border-radius-8 border">
-            <div className="section-header px-24 py-16" style={{ borderBottom: '1px dashed #e2e8f0' }}>
-              <div className="dis-flex align-items-center gap-8">
-                <i className="ti ti-info-circle" style={{ fontSize: 20, color: '#0056D2' }}></i>
-                <h3 style={{ margin: 0, fontWeight: 600, fontSize: 15, color: '#1e293b' }}>Thông tin chung</h3>
-              </div>
-            </div>
-            
-            <div className="section-body px-24 py-24">
-              <div className="grid-2 gap-x-32 gap-y-20">
-                <div className="field col-span-2 mb-0">
-                  <label className="dis-flex align-items-center gap-8 cursor-pointer">
-                    <input type="checkbox" className="react-checkbox" checked={form.is_employee} onChange={e => handleChange('is_employee', e.target.checked)} />
-                    <span style={{ fontWeight: 500, color: '#0f172a' }}>Là nhân viên công ty</span>
-                  </label>
-                </div>
-
-                <div className="field col-span-2">
-                  <label>Mã nhân viên <span className="req">*</span></label>
-                  <input type="text" className="form-control font-weight-bold text-primary" value={form.subject_code} onChange={e => handleChange('subject_code', e.target.value)} style={{ backgroundColor: '#f8fafc', borderRadius: 6 }} />
-                </div>
-                <div className="field col-span-2">
-                  <label>Họ và tên <span className="req">*</span></label>
-                  <input type="text" className="form-control" placeholder="Nhập họ và tên" value={form.subject_name} onChange={e => handleChange('subject_name', e.target.value)} style={{ borderRadius: 6 }} />
-                </div>
-
-                <div className="field">
-                  <label>Giới tính</label>
-                  <select className="form-control" value={form.gender || ''} onChange={e => handleChange('gender', e.target.value)} style={{ borderRadius: 6 }}>
-                    <option value="">- Chọn -</option>
-                    <option value="Nam">Nam</option>
-                    <option value="Nữ">Nữ</option>
-                    <option value="Khác">Khác</option>
-                  </select>
-                </div>
-                <div className="field">
-                  <label>Ngày sinh</label>
-                  <div className="position-relative">
-                    <input type="date" className="form-control" value={form.birth_date || ''} onChange={e => handleChange('birth_date', e.target.value)} style={{ borderRadius: 6 }} />
-                  </div>
-                </div>
-
-                <div className="field col-span-2">
-                  <label>Địa chỉ</label>
-                  <input type="text" className="form-control" placeholder="Nhập địa chỉ" value={form.address || ''} onChange={e => handleChange('address', e.target.value)} style={{ borderRadius: 6 }} />
-                </div>
-
-                <div className="field">
-                  <label>Điện thoại di động</label>
-                  <input type="text" className="form-control" placeholder="Nhập số điện thoại" value={form.contact_phone || ''} onChange={e => handleChange('contact_phone', e.target.value)} style={{ borderRadius: 6 }} />
-                </div>
-                <div className="field">
-                  <label>Email cá nhân</label>
-                  <input type="email" className="form-control" placeholder="Nhập email" value={form.contact_email || ''} onChange={e => handleChange('contact_email', e.target.value)} style={{ borderRadius: 6 }} />
-                </div>
-                
-                <div className="field col-span-2">
-                  <label>Trạng thái</label>
-                  <select className="form-control" value={form.employee_status || ''} onChange={e => handleChange('employee_status', e.target.value)} style={{ borderRadius: 6 }}>
-                    <option value="WORKING">Đang làm việc</option>
-                    <option value="RESIGNED">Đã nghỉ việc</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="company-card info-section bg-white border-radius-8 border">
-            <div className="section-header px-24 py-16" style={{ borderBottom: '1px dashed #e2e8f0' }}>
-              <div className="dis-flex align-items-center gap-8">
-                <i className="ti ti-briefcase" style={{ fontSize: 20, color: '#059669' }}></i>
-                <h3 style={{ margin: 0, fontWeight: 600, fontSize: 15, color: '#1e293b' }}>Thông tin công việc</h3>
-              </div>
-            </div>
-            
-            <div className="section-body px-24 py-24">
-              <div className="grid-2 gap-x-32 gap-y-20">
-                <div className="field col-span-2">
-                  <label>Đơn vị công tác <span className="req">*</span></label>
-                  <MultiSelect 
-                    options={orgOptions}
-                    value={form.org_unit_ids || []}
-                    onChange={v => handleChange('org_unit_ids', v)}
-                    placeholder="Chọn đơn vị"
-                  />
-                </div>
-                <div className="field">
-                  <label>Phòng ban</label>
-                  <MultiSelect 
-                    options={deptOptions}
-                    value={form.department_ids || []}
-                    onChange={v => handleChange('department_ids', v)}
-                    placeholder="Chọn phòng ban"
-                  />
-                </div>
-                <div className="field">
-                  <label>Chức danh</label>
-                  <MultiSelect 
-                    options={titleOptions}
-                    value={form.job_title_ids || []}
-                    onChange={v => handleChange('job_title_ids', v)}
-                    placeholder="Chọn chức danh"
-                  />
-                </div>
-
-                <div className="field col-span-2">
-                  <label>Quản lý trực tiếp</label>
-                  <select className="form-control" value={form.direct_manager_id || ''} onChange={e => handleChange('direct_manager_id', e.target.value ? parseInt(e.target.value) : null)} style={{ borderRadius: 6 }}>
-                    <option value="">Chọn quản lý trực tiếp</option>
-                    {managers.map(m => <option key={m.id} value={m.id}>{m.subject_name}</option>)}
-                  </select>
-                </div>
-
-                <div className="field">
-                  <label>Ngày thử việc</label>
-                  <div className="position-relative">
-                    <input type="date" className="form-control" value={form.probation_date || ''} onChange={e => handleChange('probation_date', e.target.value)} style={{ borderRadius: 6 }} />
-                  </div>
-                </div>
-                <div className="field">
-                  <label>Ngày chính thức</label>
-                  <div className="position-relative">
-                    <input type="date" className="form-control" value={form.official_date || ''} onChange={e => handleChange('official_date', e.target.value)} style={{ borderRadius: 6 }} />
-                  </div>
-                </div>
-
-                <div className="field">
-                  <label>Tài khoản / Điện thoại cơ</label>
-                  <input type="text" className="form-control" placeholder="SĐT đăng nhập" value={form.account_phone || ''} onChange={e => handleChange('account_phone', e.target.value)} style={{ borderRadius: 6 }} />
-                </div>
-                <div className="field">
-                  <label>Email công ty</label>
-                  <input type="email" className="form-control" placeholder="Nhập email" value={form.account_email || ''} onChange={e => handleChange('account_email', e.target.value)} style={{ borderRadius: 6 }} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )
