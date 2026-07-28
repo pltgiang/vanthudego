@@ -12,6 +12,16 @@ export default function VpnPermissionList() {
   const [filterCompany, setFilterCompany] = useState('ALL')
   const [filterDept, setFilterDept] = useState('ALL')
   const [filterVpn, setFilterVpn] = useState('ALL')
+  const [showColSettings, setShowColSettings] = useState(false)
+  const [cols, setCols] = useState({
+    code: true,
+    name: true,
+    company: true,
+    dept: true,
+    dego: true,
+    ida: true,
+    ida_1433: true
+  })
 
   const fetchSubjects = async () => {
     try {
@@ -116,12 +126,29 @@ export default function VpnPermissionList() {
               </select>
             </div>
             <div className="actions dis-flex align-items-center gap-12">
-              <button className="btn outline icon-btn" title="Làm mới" onClick={fetchSubjects} style={{ borderRadius: 6 }}>
-                <i className="ti ti-refresh" />
+              <button className="btn outline icon-btn" title="Làm mới" onClick={fetchSubjects} style={{ borderRadius: 6 }} disabled={loading}>
+                <i className="ti ti-refresh" style={{ animation: loading ? 'spin 1s linear infinite' : 'none' }} />
               </button>
-              <button className="btn outline icon-btn" title="Cài đặt cột" style={{ borderRadius: 6 }}>
-                <i className="ti ti-columns" />
-              </button>
+              <div className="position-relative">
+                <button className="btn outline icon-btn" title="Cài đặt cột" onClick={() => setShowColSettings(!showColSettings)} style={{ borderRadius: 6 }}>
+                  <i className="ti ti-columns" />
+                </button>
+                {showColSettings && (
+                  <>
+                    <div className="position-fixed" style={{ inset: 0, zIndex: 9 }} onClick={() => setShowColSettings(false)} />
+                    <div className="position-absolute bg-white border" style={{ top: '100%', right: 0, marginTop: 4, borderRadius: 6, zIndex: 10, width: 200, padding: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                      <div className="font-weight-bold mb-12 pb-8 border-bottom" style={{ fontSize: 13 }}>Hiển thị cột</div>
+                      <label className="dis-flex align-items-center gap-8 mb-8 cursor-pointer" style={{ fontSize: 13 }}><input type="checkbox" checked={cols.code} onChange={e => setCols(c => ({...c, code: e.target.checked}))} /> Mã NV</label>
+                      <label className="dis-flex align-items-center gap-8 mb-8 cursor-pointer" style={{ fontSize: 13 }}><input type="checkbox" checked={cols.name} onChange={e => setCols(c => ({...c, name: e.target.checked}))} /> Họ tên</label>
+                      <label className="dis-flex align-items-center gap-8 mb-8 cursor-pointer" style={{ fontSize: 13 }}><input type="checkbox" checked={cols.company} onChange={e => setCols(c => ({...c, company: e.target.checked}))} /> Công ty</label>
+                      <label className="dis-flex align-items-center gap-8 mb-8 cursor-pointer" style={{ fontSize: 13 }}><input type="checkbox" checked={cols.dept} onChange={e => setCols(c => ({...c, dept: e.target.checked}))} /> Phòng ban</label>
+                      <label className="dis-flex align-items-center gap-8 mb-8 cursor-pointer" style={{ fontSize: 13 }}><input type="checkbox" checked={cols.dego} onChange={e => setCols(c => ({...c, dego: e.target.checked}))} /> Dego</label>
+                      <label className="dis-flex align-items-center gap-8 mb-8 cursor-pointer" style={{ fontSize: 13 }}><input type="checkbox" checked={cols.ida} onChange={e => setCols(c => ({...c, ida: e.target.checked}))} /> IDA</label>
+                      <label className="dis-flex align-items-center gap-8 mb-0 cursor-pointer" style={{ fontSize: 13 }}><input type="checkbox" checked={cols.ida_1433} onChange={e => setCols(c => ({...c, ida_1433: e.target.checked}))} /> IDA,1433</label>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
           
@@ -129,13 +156,13 @@ export default function VpnPermissionList() {
             <table className="table table-hover table-px-10 mb-0">
               <thead style={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: '#fff' }}>
                 <tr>
-                  <th style={{ width: 120 }}>Mã NV</th>
-                  <th style={{ width: 240 }}>Họ tên</th>
-                  <th style={{ width: 200 }}>Công ty</th>
-                  <th style={{ width: 200 }}>Phòng Ban</th>
-                  <th style={{ width: 100, textAlign: 'center' }}>Dego</th>
-                  <th style={{ width: 100, textAlign: 'center' }}>IDA</th>
-                  <th style={{ width: 100, textAlign: 'center' }}>IDA,1433</th>
+                  {cols.code && <th style={{ width: 120 }}>Mã NV</th>}
+                  {cols.name && <th style={{ width: 240 }}>Họ tên</th>}
+                  {cols.company && <th style={{ width: 200 }}>Công ty</th>}
+                  {cols.dept && <th style={{ width: 200 }}>Phòng Ban</th>}
+                  {cols.dego && <th style={{ width: 100, textAlign: 'center' }}>Dego</th>}
+                  {cols.ida && <th style={{ width: 100, textAlign: 'center' }}>IDA</th>}
+                  {cols.ida_1433 && <th style={{ width: 100, textAlign: 'center' }}>IDA,1433</th>}
                   <th style={{ width: 60, textAlign: 'center' }}>Sửa</th>
                 </tr>
               </thead>
@@ -146,18 +173,18 @@ export default function VpnPermissionList() {
                   
                   return (
                     <tr key={item.id}>
-                      <td className="font-weight-bold">{item.subject_code || '- -'}</td>
-                      <td>
+                      {cols.code && <td className="font-weight-bold">{item.subject_code || '- -'}</td>}
+                      {cols.name && <td>
                         <div className="dis-flex align-items-center gap-12">
                           <div className="avatar" style={{ width: 28, height: 28, borderRadius: '50%', backgroundColor: '#E0E7FF', color: '#3730A3', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: 11 }}>
                             {(item.subject_name || 'NV').substring(0, 2).toUpperCase()}
                           </div>
                           <span className="font-weight-bold" style={{ fontSize: 13 }}>{item.subject_name}</span>
                         </div>
-                      </td>
-                      <td>{item.company_names?.length > 0 ? item.company_names.join(', ') : '- -'}</td>
-                      <td>{item.department_names?.length > 0 ? item.department_names.join(', ') : '- -'}</td>
-                      <td style={{ textAlign: 'center' }}>
+                      </td>}
+                      {cols.company && <td>{item.company_names?.length > 0 ? item.company_names.join(', ') : '- -'}</td>}
+                      {cols.dept && <td>{item.department_names?.length > 0 ? item.department_names.join(', ') : '- -'}</td>}
+                      {cols.dego && <td style={{ textAlign: 'center' }}>
                         <div className="dis-flex justify-content-center">
                           <label className="cursor-pointer" style={{ margin: 0 }}>
                             <div className={`switch-toggle ${servers.includes('Dego') ? 'active' : ''}`} onClick={() => handleToggleVpn(item.id, 'Dego', !servers.includes('Dego'), access)}>
@@ -165,8 +192,8 @@ export default function VpnPermissionList() {
                             </div>
                           </label>
                         </div>
-                      </td>
-                      <td style={{ textAlign: 'center' }}>
+                      </td>}
+                      {cols.ida && <td style={{ textAlign: 'center' }}>
                         <div className="dis-flex justify-content-center">
                           <label className="cursor-pointer" style={{ margin: 0 }}>
                             <div className={`switch-toggle ${servers.includes('IDA') ? 'active' : ''}`} onClick={() => handleToggleVpn(item.id, 'IDA', !servers.includes('IDA'), access)}>
@@ -174,8 +201,8 @@ export default function VpnPermissionList() {
                             </div>
                           </label>
                         </div>
-                      </td>
-                      <td style={{ textAlign: 'center' }}>
+                      </td>}
+                      {cols.ida_1433 && <td style={{ textAlign: 'center' }}>
                         <div className="dis-flex justify-content-center">
                           <label className="cursor-pointer" style={{ margin: 0 }}>
                             <div className={`switch-toggle ${servers.includes('IDA_1433') ? 'active' : ''}`} onClick={() => handleToggleVpn(item.id, 'IDA_1433', !servers.includes('IDA_1433'), access)}>
@@ -183,7 +210,7 @@ export default function VpnPermissionList() {
                             </div>
                           </label>
                         </div>
-                      </td>
+                      </td>}
                       <td style={{ textAlign: 'center' }}>
                         <button className="btn ghost icon-btn" title="Chỉnh sửa" onClick={() => navigate(`/vpn/${item.id}`)} style={{ color: '#0ea5e9' }}>
                           <i className="ti ti-edit"></i>
