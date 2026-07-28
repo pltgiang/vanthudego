@@ -56,6 +56,21 @@ export default function JobPositionForm() {
     fetchData()
   }, [id, isNew, navigate])
 
+  useEffect(() => {
+    if (initialLoading) return;
+    const title = titles.find((t: any) => t.id === form.title_id)?.title_name || ''
+    const dept = departments.find((d: any) => d.id === form.department_id)?.name || ''
+    const compShortNames = (form.company_ids || []).map((cid: any) => {
+      const comp = companies.find((c: any) => c.id === cid)
+      return comp ? (comp.short_name || comp.code || comp.name) : ''
+    }).filter(Boolean).join(' + ')
+
+    const parts = [title, dept, compShortNames].filter(Boolean)
+    if (parts.length > 0) {
+      setForm((prev: any) => ({ ...prev, position_name: parts.join(' - ') }))
+    }
+  }, [form.title_id, form.department_id, form.company_ids])
+
   const handleChange = (k: string, v: any) => setForm((prev: any) => ({ ...prev, [k]: v }))
 
   const handleSave = async (e: React.FormEvent) => {
