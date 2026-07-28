@@ -15,6 +15,7 @@ export default function CompanyInfo() {
   const [saving, setSaving] = useState(false);
   const [company, setCompany] = useState<any>(null);
   const [formData, setFormData] = useState<any>({});
+  const [auditLogs, setAuditLogs] = useState<any[]>([]);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -32,6 +33,8 @@ export default function CompanyInfo() {
       const c = res.data.data;
       setCompany(c);
       setFormData(c);
+      const logRes = await api.get(`/api/audit-logs?entity=company&entity_id=${id}`);
+      setAuditLogs(logRes.data.data?.items || logRes.data.data || []);
     } catch (e: any) {
       toast.error('Không thể tải thông tin công ty');
     } finally {
@@ -47,7 +50,7 @@ export default function CompanyInfo() {
     setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = async () => {
+  const handleSave = async (close: boolean = false) => {
     try {
       setSaving(true);
       const payload = {
@@ -73,14 +76,22 @@ export default function CompanyInfo() {
       };
       
       if (id === 'new') {
-        await api.post(`/api/companies`, payload);
+        const createRes = await api.post(`/api/companies`, payload);
         toast.success('Đã thêm mới công ty');
-        navigate('/companies');
+        if (close) {
+          navigate('/company-info');
+        } else {
+          navigate(`/company-info/${createRes.data.data.id}`, { replace: true });
+        }
       } else {
         if (!company) return;
         await api.patch(`/api/companies/${company.id}`, payload);
         toast.success('Đã lưu thông tin công ty');
-        fetchCompany();
+        if (close) {
+          navigate('/company-info');
+        } else {
+          fetchCompany();
+        }
       }
     } catch (e: any) {
       toast.error('Lưu thất bại: ' + (e.response?.data?.message || e.message));
@@ -127,6 +138,42 @@ export default function CompanyInfo() {
     }
   };
 
+  const handleDelete = async () => {
+    if (!company) return;
+    if (await askConfirm({
+      title: 'Xóa công ty',
+      message: `Bạn có chắc chắn muốn xóa công ty "${company.name}"? Hành động này không thể hoàn tác.`,
+      confirmText: 'Xóa',
+      confirmColor: 'var(--red)',
+    })) {
+      try {
+        await api.delete(`/api/companies/${company.id}`);
+        toast.success('Đã xóa công ty');
+        navigate('/company-info');
+      } catch (e: any) {
+        toast.error('Xóa thất bại: ' + (e.response?.data?.message || e.message));
+      }
+    }
+  };
+
+  const getFieldLabel = (key: string) => {
+    const map: Record<string, string> = {
+      name: 'Tên công ty', short_name: 'Tên viết tắt', business_type: 'Loại hình kinh doanh',
+      tax_code: 'Mã số thuế', foundation_date: 'Ngày thành lập', business_registration_code: 'Mã số ĐKKD',
+      issue_date: 'Ngày cấp', issue_place: 'Nơi cấp', legal_rep_name: 'Người đại diện',
+      address: 'Địa chỉ', province: 'Tỉnh/Thành phố', district: 'Quận/Huyện', ward: 'Xã/Phường',
+      phone: 'Điện thoại', is_active: 'Trạng thái', is_group_model: 'Mô hình tập đoàn'
+    };
+    return map[key] || key;
+  };
+  
+  const getFieldValueLabel = (key: string, val: any) => {
+    if (val === null || val === '') return 'Trống';
+    if (key === 'is_active' || key === 'Trạng thái') return val ? 'Hoạt động' : 'Ngưng hoạt động';
+    if (key === 'is_group_model' || key === 'Mô hình tập đoàn') return val ? 'Bật' : 'Tắt';
+    return String(val);
+  };
+
   if (loading) return <div className="p-4">Đang tải...</div>;
   if (!company) return <div className="p-4">Không tìm thấy dữ liệu công ty</div>;
 
@@ -143,10 +190,10 @@ export default function CompanyInfo() {
           <button type="button" className="btn ghost" onClick={() => navigate('/company-info')} style={{ background: 'rgb(241, 245, 249)', color: 'rgb(71, 85, 105)', border: 'none', marginRight: '12px' }}>
             Hủy bỏ
           </button>
-          <button type="button" className="btn" onClick={handleSave} disabled={saving} style={{ marginRight: '12px', background: 'white', border: '1px solid rgb(203, 213, 225)', display: 'flex', alignItems: 'center', gap: '6px', color: 'rgb(14, 165, 233)' }}>
+          <button type="button" className="btn" onClick={() => handleSave(false)} disabled={saving} style={{ marginRight: '12px', background: 'white', border: '1px solid rgb(203, 213, 225)', display: 'flex', alignItems: 'center', gap: '6px', color: 'rgb(14, 165, 233)' }}>
             <i className="ti ti-device-floppy"></i> {saving ? 'Đang lưu...' : 'Lưu'}
           </button>
-          <button type="button" className="btn btn-primary" onClick={handleSave} disabled={saving}>
+          <button type="button" className="btn btn-primary" onClick={() => handleSave(true)} disabled={saving}>
             Hoàn tất
           </button>
         </div>
@@ -340,14 +387,11 @@ export default function CompanyInfo() {
               </div>
               <div className="section-body">
                 <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                  <button type="button" className="btn outline" style={{ color: 'var(--red)', borderColor: 'var(--red)', background: '#fff' }}>
+                  <button type="button" className="btn outline" onClick={handleDelete} style={{ color: 'var(--red)', borderColor: 'var(--red)', background: '#fff' }}>
                     <i className="ti ti-trash"></i> Xóa bản ghi
                   </button>
                   <button type="button" className="btn outline">
                     <i className="ti ti-printer"></i> In thông tin
-                  </button>
-                  <button type="button" className="btn outline">
-                    <i className="ti ti-file-export"></i> Xuất dữ liệu
                   </button>
                 </div>
               </div>
@@ -361,22 +405,44 @@ export default function CompanyInfo() {
               </div>
               <div className="section-body">
                 <div className="timeline">
-                  {formData.updated_at && (
+                  {auditLogs.length === 0 ? (
                     <div className="tl-item">
                       <span className="tl-dot update"></span>
                       <div>
-                        <div style={{ fontSize: '14px' }}><b>{formData.updated_by || 'Người dùng'}</b> — Cập nhật thông tin</div>
-                        <div style={{ fontSize: '12px', color: '#64748b' }}>{new Date(formData.updated_at).toLocaleString('vi-VN')}</div>
+                        <div style={{ fontSize: '13.5px', color: '#64748b' }}>Chưa có lịch sử thao tác nào.</div>
                       </div>
                     </div>
-                  )}
-                  <div className="tl-item">
-                    <span className="tl-dot create"></span>
-                    <div>
-                      <div style={{ fontSize: '14px' }}><b>{formData.created_by || 'Hệ thống'}</b> — Tạo mới công ty</div>
-                      <div style={{ fontSize: '12px', color: '#64748b' }}>{formData.created_at ? new Date(formData.created_at).toLocaleString('vi-VN') : ''}</div>
-                    </div>
-                  </div>
+                  ) : auditLogs.map((log, idx) => {
+                    let parsedMsg = null;
+                    try {
+                      if (log.message && log.message.startsWith('{')) {
+                        const data = JSON.parse(log.message);
+                        parsedMsg = (
+                          <div style={{ marginTop: '4px', fontSize: '13.5px', color: '#334155' }}>
+                            {Object.entries(data).map(([k, v]) => (
+                              <div key={k} style={{ marginBottom: '2px' }}>
+                                &bull; Đổi <b>{getFieldLabel(k)}</b> thành <b>{getFieldValueLabel(k, v)}</b>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      } else if (log.message) {
+                        parsedMsg = <div style={{ marginTop: '4px', fontSize: '13.5px', color: '#334155' }}>{log.message}</div>;
+                      }
+                    } catch (e) {
+                      parsedMsg = <div style={{ marginTop: '4px', fontSize: '13.5px', color: '#334155' }}>{log.message}</div>;
+                    }
+                    return (
+                      <div className="tl-item" key={idx}>
+                        <span className={`tl-dot ${log.action === 'create' ? 'create' : 'update'}`}></span>
+                        <div>
+                          <div style={{ fontSize: '14px' }}><b>{log.user_email || 'Hệ thống'}</b> — {log.action === 'create' ? 'Tạo mới' : 'Cập nhật'}</div>
+                          <div style={{ fontSize: '12px', color: '#64748b' }}>{new Date(log.created_at).toLocaleString('vi-VN')}</div>
+                          {parsedMsg}
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             </div>
