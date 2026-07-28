@@ -32,25 +32,22 @@ class JobPosition(Base, AuditMixin):
 
     position_code: Mapped[str] = mapped_column(String(20), unique=True, index=True)
     position_name: Mapped[str] = mapped_column(String(255))
-    group_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("tab_position_group.id"), nullable=True)
+    department_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("tab_department.id"), nullable=True)
     title_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("tab_job_title.id"), nullable=True)
-    report_to_position_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("tab_job_position.id"), nullable=True)
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     is_inactive: Mapped[bool] = mapped_column(Boolean, default=False)
 
     # Relationships
-    group: Mapped["PositionGroup"] = relationship()
     title: Mapped["JobTitle"] = relationship()
-    report_to: Mapped["JobPosition"] = relationship(remote_side="[JobPosition.id]")
-    org_units: Mapped[List["JobPositionOrgUnit"]] = relationship(
+    companies: Mapped[List["JobPositionCompany"]] = relationship(
         back_populates="job_position", cascade="all, delete-orphan"
     )
 
-class JobPositionOrgUnit(Base):
-    """Bảng trung gian liên kết Vị trí công việc và Đơn vị công tác"""
-    __tablename__ = "tab_job_position_org_unit"
+class JobPositionCompany(Base):
+    """Bảng trung gian liên kết Vị trí công việc và Công ty"""
+    __tablename__ = "tab_job_position_company"
 
     job_position_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("tab_job_position.id"), primary_key=True)
-    org_unit_id: Mapped[int] = mapped_column(BigInteger, primary_key=True) # Không ForeignKey cứng tới OrgUnit để tránh dependencies vòng hoặc cascade phức tạp
+    company_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
 
-    job_position: Mapped["JobPosition"] = relationship(back_populates="org_units")
+    job_position: Mapped["JobPosition"] = relationship(back_populates="companies")

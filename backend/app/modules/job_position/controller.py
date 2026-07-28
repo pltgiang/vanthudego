@@ -128,7 +128,7 @@ def toggle_title_inactive(id: int, data: dict, user=Depends(require("job_positio
 def get_job_positions(
     status: Optional[str] = None,
     q: Optional[str] = None,
-    org_unit_id: Optional[int] = None,
+    department_id: Optional[int] = None,
     user=Depends(require("job_position", "read")),
     db: Session = Depends(get_db)
 ):
@@ -142,26 +142,34 @@ def get_job_positions(
         search = f"%{q}%"
         query = query.filter(or_(JobPosition.position_code.like(search), JobPosition.position_name.like(search)))
         
-    if org_unit_id:
-        query = query.filter(JobPosition.org_units.any(org_unit_id=org_unit_id))
+    if department_id:
+        query = query.filter(JobPosition.department_id == department_id)
         
     items = query.order_by(JobPosition.id.desc()).all()
     
     out = []
     for item in items:
+        # Load department name
+        from app.modules.department.model import Department
+        dept = db.query(Department).filter(Department.id == item.department_id).first() if item.department_id else None
+        
+        # Load company names
+        from app.modules.company.model import Company
+        company_ids = [c.company_id for c in item.companies]
+        companies = db.query(Company).filter(Company.id.in_(company_ids)).all() if company_ids else []
+        
         obj = {
             "id": item.id,
             "position_code": item.position_code,
             "position_name": item.position_name,
-            "group_id": item.group_id,
-            "group_name": item.group.group_name if item.group else "",
+            "department_id": item.department_id,
+            "department_name": dept.department_name if dept else "",
             "title_id": item.title_id,
             "title_name": item.title.title_name if item.title else "",
-            "report_to_position_id": item.report_to_position_id,
-            "report_to_name": item.report_to.position_name if item.report_to else "",
             "description": item.description,
             "is_inactive": item.is_inactive,
-            "org_unit_ids": [ou.org_unit_id for ou in item.org_units]
+            "company_ids": company_ids,
+            "company_names": [c.company_name for c in companies]
         }
         out.append(obj)
     return success(out)
@@ -177,19 +185,27 @@ def get_job_position(id: int, user=Depends(require("job_position", "read")), db:
     if not item:
         from fastapi import HTTPException
         raise HTTPException(404, "Không tìm thấy vị trí công việc")
+    # Load department name
+    from app.modules.department.model import Department
+    dept = db.query(Department).filter(Department.id == item.department_id).first() if item.department_id else None
+    
+    # Load company names
+    from app.modules.company.model import Company
+    company_ids = [c.company_id for c in item.companies]
+    companies = db.query(Company).filter(Company.id.in_(company_ids)).all() if company_ids else []
+    
     obj = {
         "id": item.id,
         "position_code": item.position_code,
         "position_name": item.position_name,
-        "group_id": item.group_id,
-        "group_name": item.group.group_name if item.group else "",
+        "department_id": item.department_id,
+        "department_name": dept.department_name if dept else "",
         "title_id": item.title_id,
         "title_name": item.title.title_name if item.title else "",
-        "report_to_position_id": item.report_to_position_id,
-        "report_to_name": item.report_to.position_name if item.report_to else "",
         "description": item.description,
         "is_inactive": item.is_inactive,
-        "org_unit_ids": [ou.org_unit_id for ou in item.org_units]
+        "company_ids": company_ids,
+        "company_names": [c.company_name for c in companies]
     }
     return success(obj)
 

@@ -12,28 +12,25 @@ export default function JobPositionForm() {
   const isNew = !id || id === 'new'
   
   const [form, setForm] = useState<any>({
-    id: 0, position_code: '', position_name: '', group_id: null, title_id: null, report_to_position_id: null, description: '', is_inactive: false, org_unit_ids: []
+    id: 0, position_code: '', position_name: '', department_id: null, title_id: null, description: '', is_inactive: false, company_ids: []
   })
   const [loading, setLoading] = useState(false)
   const [initialLoading, setInitialLoading] = useState(true)
-  const [groups, setGroups] = useState<any[]>([])
+  const [departments, setDepartments] = useState<any[]>([])
   const [titles, setTitles] = useState<any[]>([])
-  const [positions, setPositions] = useState<any[]>([])
-  const [orgUnits, setOrgUnits] = useState<any[]>([])
+  const [companies, setCompanies] = useState<any[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [rg, rt, rp, ro] = await Promise.all([
-          api.get('/api/v1/system/position-groups'),
+        const [rd, rt, rc] = await Promise.all([
+          api.get('/api/v1/system/departments'),
           api.get('/api/v1/system/job-titles'),
-          api.get('/api/v1/system/job-positions'),
-          api.get('/api/v1/system/org-units')
+          api.get('/api/v1/system/companies')
         ])
-        setGroups(rg.data.data || [])
+        setDepartments(rd.data.data || [])
         setTitles(rt.data.data || [])
-        setPositions((rp.data.data || []).filter((p: any) => p.id !== (isNew ? 0 : parseInt(id || '0'))))
-        setOrgUnits(ro.data.data || [])
+        setCompanies(rc.data.data || [])
         
         if (!isNew) {
           const res = await api.get(`/api/v1/system/job-positions/${id}`)
@@ -72,7 +69,7 @@ export default function JobPositionForm() {
     finally { setLoading(false) }
   }
 
-  const orgOptions = orgUnits.map((u: any) => ({ value: u.id, label: u.unit_code + ' - ' + u.unit_name }))
+  const companyOptions = companies.map((c: any) => ({ value: c.id, label: c.company_name }))
 
   if (initialLoading) return <div className="p-24 text-muted">Đang tải...</div>
 
@@ -108,20 +105,6 @@ export default function JobPositionForm() {
                 <label>Tên vị trí <span className="req">*</span></label>
                 <input type="text" className="form-control" required value={form.position_name || ''} onChange={e => handleChange('position_name', e.target.value)} />
               </div>
-              <div className="field col-span-2">
-                <label>Nhóm vị trí</label>
-                <select className="form-control" value={form.group_id || ''} onChange={e => handleChange('group_id', e.target.value ? parseInt(e.target.value) : null)}>
-                  <option value="">- Chọn nhóm -</option>
-                  {groups.map((g: any) => <option key={g.id} value={g.id}>{g.group_name}</option>)}
-                </select>
-              </div>
-              <div className="field col-span-2">
-                <label>Chức danh</label>
-                <select className="form-control" value={form.title_id || ''} onChange={e => handleChange('title_id', e.target.value ? parseInt(e.target.value) : null)}>
-                  <option value="">- Chọn chức danh -</option>
-                  {titles.map((t: any) => <option key={t.id} value={t.id}>{t.title_name}</option>)}
-                </select>
-              </div>
             </div>
           </div>
 
@@ -132,19 +115,26 @@ export default function JobPositionForm() {
             </div>
             <div className="section-body grid-2">
               <div className="field col-span-2">
-                <label>Báo cáo cho (Vị trí quản lý)</label>
-                <select className="form-control" value={form.report_to_position_id || ''} onChange={e => handleChange('report_to_position_id', e.target.value ? parseInt(e.target.value) : null)}>
-                  <option value="">- Không có -</option>
-                  {positions.map((p: any) => <option key={p.id} value={p.id}>{p.position_code} - {p.position_name}</option>)}
+                <label>Chức danh</label>
+                <select className="form-control" value={form.title_id || ''} onChange={e => handleChange('title_id', e.target.value ? parseInt(e.target.value) : null)}>
+                  <option value="">- Chọn chức danh -</option>
+                  {titles.map((t: any) => <option key={t.id} value={t.id}>{t.title_name}</option>)}
                 </select>
               </div>
               <div className="field col-span-2">
-                <label>Đơn vị công tác</label>
+                <label>Phòng ban</label>
+                <select className="form-control" value={form.department_id || ''} onChange={e => handleChange('department_id', e.target.value ? parseInt(e.target.value) : null)}>
+                  <option value="">- Chọn phòng ban -</option>
+                  {departments.map((d: any) => <option key={d.id} value={d.id}>{d.department_name}</option>)}
+                </select>
+              </div>
+              <div className="field col-span-2">
+                <label>Công ty</label>
                 <MultiSelect 
-                  options={orgOptions}
-                  value={form.org_unit_ids || []}
-                  onChange={v => handleChange('org_unit_ids', v)}
-                  placeholder="Chọn đơn vị (có thể chọn nhiều)"
+                  options={companyOptions}
+                  value={form.company_ids || []}
+                  onChange={v => handleChange('company_ids', v)}
+                  placeholder="Chọn công ty (có thể chọn nhiều)"
                 />
               </div>
             </div>

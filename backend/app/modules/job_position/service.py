@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from app.modules.job_position.model import JobPosition, JobPositionOrgUnit, PositionGroup, JobTitle
-from app.modules.org_unit.model import OrgUnit
+from app.modules.job_position.model import JobPosition, JobPositionCompany, PositionGroup, JobTitle
+from app.modules.company.model import Company
+from app.modules.department.model import Department
 from app.modules.job_position.schema import JobPositionCreate, JobPositionUpdate, PositionGroupCreate, PositionGroupUpdate, JobTitleCreate, JobTitleUpdate
 
 # --- Position Group ---
@@ -84,18 +85,17 @@ def create_job_position(db: Session, data: JobPositionCreate) -> JobPosition:
     db_obj = JobPosition(
         position_code=data.position_code,
         position_name=data.position_name,
-        group_id=data.group_id,
+        department_id=data.department_id,
         title_id=data.title_id,
-        report_to_position_id=data.report_to_position_id,
         description=data.description or "",
         is_inactive=data.is_inactive
     )
     db.add(db_obj)
     db.flush()
 
-    if data.org_unit_ids:
-        for ou_id in data.org_unit_ids:
-            db.add(JobPositionOrgUnit(job_position_id=db_obj.id, org_unit_id=ou_id))
+    if data.company_ids:
+        for c_id in data.company_ids:
+            db.add(JobPositionCompany(job_position_id=db_obj.id, company_id=c_id))
 
     db.commit()
     db.refresh(db_obj)
@@ -115,16 +115,15 @@ def update_job_position(db: Session, id: int, data: JobPositionUpdate) -> JobPos
 
     db_obj.position_code = data.position_code
     db_obj.position_name = data.position_name
-    db_obj.group_id = data.group_id
+    db_obj.department_id = data.department_id
     db_obj.title_id = data.title_id
-    db_obj.report_to_position_id = data.report_to_position_id
     db_obj.description = data.description or ""
     db_obj.is_inactive = data.is_inactive
 
-    db.query(JobPositionOrgUnit).filter(JobPositionOrgUnit.job_position_id == id).delete()
-    if data.org_unit_ids:
-        for ou_id in data.org_unit_ids:
-            db.add(JobPositionOrgUnit(job_position_id=db_obj.id, org_unit_id=ou_id))
+    db.query(JobPositionCompany).filter(JobPositionCompany.job_position_id == id).delete()
+    if data.company_ids:
+        for c_id in data.company_ids:
+            db.add(JobPositionCompany(job_position_id=db_obj.id, company_id=c_id))
 
     db.commit()
     db.refresh(db_obj)
@@ -134,11 +133,6 @@ def delete_job_position(db: Session, id: int):
     db_obj = db.query(JobPosition).filter(JobPosition.id == id).first()
     if not db_obj:
         raise HTTPException(404, "Không tìm thấy vị trí công việc")
-        
-    # Check if used by any Subject (TBD in Subject module)
-    
-    if db.query(JobPosition).filter(JobPosition.report_to_position_id == id).first():
-        raise HTTPException(400, "Có vị trí khác đang báo cáo cho vị trí này, không thể xóa.")
 
     db.delete(db_obj)
     db.commit()

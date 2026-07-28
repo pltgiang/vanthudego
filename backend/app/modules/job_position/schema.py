@@ -43,12 +43,11 @@ class JobTitleOut(JobTitleBase):
 class JobPositionBase(BaseModel):
     position_code: str
     position_name: str
-    group_id: Optional[int] = None
+    department_id: Optional[int] = None
     title_id: Optional[int] = None
-    report_to_position_id: Optional[int] = None
     description: Optional[str] = None
     is_inactive: Optional[bool] = False
-    org_unit_ids: Optional[List[int]] = []
+    company_ids: Optional[List[int]] = []
 
 class JobPositionCreate(JobPositionBase):
     pass
@@ -58,11 +57,10 @@ class JobPositionUpdate(JobPositionBase):
 
 class JobPositionOut(JobPositionBase):
     id: int
-    org_unit_ids: List[int]
     
     # extra fields for join
-    group_name: Optional[str] = None
+    department_name: Optional[str] = None
     title_name: Optional[str] = None
-    report_to_name: Optional[str] = None
+    company_names: Optional[List[str]] = []
     
     model_config = ConfigDict(from_attributes=True)

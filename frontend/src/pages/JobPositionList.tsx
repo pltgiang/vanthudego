@@ -84,7 +84,7 @@ const TabPositions = forwardRef(({ can, onEdit }: any, ref) => {
   const [loading, setLoading] = useState(true)
   const [sortCol, setSortCol] = useState('')
   const [sortAsc, setSortAsc] = useState(true)
-  const [visibleCols, setVisibleCols] = useState<string[]>(['code', 'name', 'desc', 'status', 'actions'])
+  const [visibleCols, setVisibleCols] = useState<string[]>(['code', 'name', 'department', 'company', 'status', 'actions'])
   const [colMenuOpen, setColMenuOpen] = useState(false)
 
   const [search, setSearch] = useState('')
@@ -186,6 +186,12 @@ const TabPositions = forwardRef(({ can, onEdit }: any, ref) => {
                   <input type="checkbox" checked={visibleCols.includes('name')} onChange={e => setVisibleCols(prev => e.target.checked ? [...prev, 'name'] : prev.filter(c => c !== 'name'))} /> Tên vị trí
                 </label>
                 <label className="dis-flex align-items-center gap-12 mb-12 cursor-pointer" style={{ fontSize: 15, color: '#0f172a', fontWeight: 600, lineHeight: '2rem' }}>
+                  <input type="checkbox" checked={visibleCols.includes('department')} onChange={e => setVisibleCols(prev => e.target.checked ? [...prev, 'department'] : prev.filter(c => c !== 'department'))} /> Phòng ban
+                </label>
+                <label className="dis-flex align-items-center gap-12 mb-12 cursor-pointer" style={{ fontSize: 15, color: '#0f172a', fontWeight: 600, lineHeight: '2rem' }}>
+                  <input type="checkbox" checked={visibleCols.includes('company')} onChange={e => setVisibleCols(prev => e.target.checked ? [...prev, 'company'] : prev.filter(c => c !== 'company'))} /> Công ty
+                </label>
+                <label className="dis-flex align-items-center gap-12 mb-12 cursor-pointer" style={{ fontSize: 15, color: '#0f172a', fontWeight: 600, lineHeight: '2rem' }}>
                   <input type="checkbox" checked={visibleCols.includes('desc')} onChange={e => setVisibleCols(prev => e.target.checked ? [...prev, 'desc'] : prev.filter(c => c !== 'desc'))} /> Mô tả
                 </label>
                 <label className="dis-flex align-items-center gap-12 mb-12 cursor-pointer" style={{ fontSize: 15, color: '#0f172a', fontWeight: 600, lineHeight: '2rem' }}>
@@ -202,6 +208,8 @@ const TabPositions = forwardRef(({ can, onEdit }: any, ref) => {
             <tr>
               {visibleCols.includes('code') && <th onClick={() => handleSort('position_code')} style={{ cursor: 'pointer', userSelect: 'none' }}><div className="dis-flex align-items-center gap-6">Mã vị trí {renderSortIcon('position_code')}</div></th>}
               {visibleCols.includes('name') && <th onClick={() => handleSort('position_name')} style={{ cursor: 'pointer', userSelect: 'none' }}><div className="dis-flex align-items-center gap-6">Tên vị trí {renderSortIcon('position_name')}</div></th>}
+              {visibleCols.includes('department') && <th onClick={() => handleSort('department_name')} style={{ cursor: 'pointer', userSelect: 'none' }}><div className="dis-flex align-items-center gap-6">Phòng ban {renderSortIcon('department_name')}</div></th>}
+              {visibleCols.includes('company') && <th><div className="dis-flex align-items-center gap-6">Công ty</div></th>}
               {visibleCols.includes('desc') && <th onClick={() => handleSort('description')} style={{ cursor: 'pointer', userSelect: 'none' }}><div className="dis-flex align-items-center gap-6">Mô tả {renderSortIcon('description')}</div></th>}
               {visibleCols.includes('status') && <th onClick={() => handleSort('is_inactive')} style={{ cursor: 'pointer', userSelect: 'none' }}><div className="dis-flex align-items-center gap-6">Trạng thái {renderSortIcon('is_inactive')}</div></th>}
               {visibleCols.includes('actions') && <th className="text-right">Thao tác</th>}
@@ -214,6 +222,8 @@ const TabPositions = forwardRef(({ can, onEdit }: any, ref) => {
                <tr key={item.id} className={item.is_inactive ? 'text-muted' : ''}>
                  {visibleCols.includes('code') && <td>{item.position_code}</td>}
                  {visibleCols.includes('name') && <td>{item.position_name}</td>}
+                 {visibleCols.includes('department') && <td>{item.department_name}</td>}
+                 {visibleCols.includes('company') && <td>{item.company_names ? item.company_names.join(', ') : ''}</td>}
                  {visibleCols.includes('desc') && <td>{item.description}</td>}
                  {visibleCols.includes('status') && <td>
                    {!item.is_inactive ? <span className="badge ok">Đang hoạt động</span> : <span className="badge gray">Ngưng hoạt động</span>}
