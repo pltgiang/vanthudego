@@ -45,7 +45,7 @@ export default function MultiSelect({ options, value = [], onChange, placeholder
         style={{ minHeight: 40, height: 'auto', padding: '4px 8px', gap: 4, cursor: 'text' }}
         onClick={() => setOpen(true)}
       >
-        {selectedOptions.length === 0 && !q && (
+        {variant === 'avatars' && selectedOptions.length === 0 && !q && (
           <div style={{ color: '#94a3b8', padding: '4px' }}>{placeholder}</div>
         )}
         
@@ -112,6 +112,7 @@ export default function MultiSelect({ options, value = [], onChange, placeholder
             type="text" 
             value={q}
             onChange={e => { setQ(e.target.value); setOpen(true) }}
+            placeholder={selectedOptions.length === 0 ? placeholder : ''}
             style={{ border: 'none', outline: 'none', background: 'transparent', flex: 1, minWidth: 60, padding: 4 }}
           />
         )}

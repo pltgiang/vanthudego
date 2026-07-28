@@ -43,15 +43,13 @@ export default function SubjectDetail() {
   useEffect(() => {
     const initData = async () => {
       try {
-        const [orgRes, deptRes, titleRes, mngRes, compRes] = await Promise.all([
-          api.get('/api/v1/system/org-units'),
-          api.get('/api/v1/system/departments'),
+        const [deptRes, titleRes, mngRes, compRes] = await Promise.all([
+          api.get('/api/departments'),
           api.get('/api/v1/system/job-titles'),
           api.get('/api/v1/system/subjects?is_employee=true'),
           api.get('/api/companies')
         ]);
-        setOrgOptions(orgRes.data.data?.map((x: any) => ({ label: x.org_unit_name, value: x.id })) || []);
-        setDeptOptions(deptRes.data.data?.map((x: any) => ({ label: x.department_name, value: x.id })) || []);
+        setDeptOptions(deptRes.data.data?.items?.map((x: any) => ({ label: x.name, value: x.id })) || []);
         setTitleOptions(titleRes.data.data?.map((x: any) => ({ label: x.title_name, value: x.id })) || []);
         setCompanyOptions(compRes.data.data?.items?.map((x: any) => ({ label: x.name, value: x.id })) || []);
         setManagers(mngRes.data.data || []);
@@ -308,14 +306,12 @@ export default function SubjectDetail() {
             <div className="section-body grid-2">
               <div className="field col-span-2">
                 <label>Công ty</label>
-                <div style={{ borderRadius: '100px', overflow: 'hidden' }}>
-                  <MultiSelect 
-                    options={companyOptions}
-                    value={form.company_ids || []}
-                    onChange={v => handleChange('company_ids', v)}
-                    placeholder="Chọn công ty"
-                  />
-                </div>
+                <MultiSelect 
+                  options={companyOptions}
+                  value={form.company_ids || []}
+                  onChange={v => handleChange('company_ids', v)}
+                  placeholder="Chọn công ty"
+                />
               </div>
               <div className="field">
                 <label>Phòng ban</label>
