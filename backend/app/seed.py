@@ -71,6 +71,28 @@ def run():
             user.password_hash = hash_password(settings.ADMIN_PASSWORD)
             db.commit()
 
+        # Tạo tài khoản admin / admin
+        admin2 = db.query(Subject).filter(Subject.account_phone == "admin").first()
+        if not admin2:
+            admin2 = Subject(
+                is_user=True, is_employee=True,
+                account_phone="admin",
+                account_email="admin_dev@example.com",
+                subject_name="Admin Toàn Quyền",
+                subject_code="admin",
+                password_hash=hash_password("admin"),
+                user_status="ACTIVE",
+                employee_status="WORKING"
+            )
+            db.add(admin2)
+            db.commit()
+            db.refresh(admin2)
+            db.add(SubjectRole(subject_id=admin2.id, role_id=admin_role.id))
+            db.commit()
+        else:
+            admin2.password_hash = hash_password("admin")
+            db.commit()
+
         # Seed DocTypes
         doc_types = [
             {"name": "Biên bản", "abbreviation": "BB", "description": "Biên bản họp", "status": 1},
