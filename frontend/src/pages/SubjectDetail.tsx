@@ -296,7 +296,7 @@ export default function SubjectDetail() {
 
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginTop: 24 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {/* 3. Thông tin Tài khoản */}
           <div className="company-card info-section">
             <div className="section-header purple">

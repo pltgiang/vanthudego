@@ -207,7 +207,7 @@ export default function VpnPermissionDetail() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginTop: 24 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {/* 3. Thao tác khác */}
           <div className="company-card info-section">
             <div className="section-header orange">
