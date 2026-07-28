@@ -331,7 +331,7 @@ export default function CompanyInfo() {
           </div>
         </div>
         {id !== 'new' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '24px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {/* 5. Thao tác khác */}
             <div className="company-card info-section">
               <div className="section-header orange">
