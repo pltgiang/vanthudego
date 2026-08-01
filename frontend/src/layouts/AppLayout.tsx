@@ -27,6 +27,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     items: [
       { to: "/", label: "Trang chủ", icon: "ti-layout-dashboard" },
+      { to: "/user-guide", label: "Hướng dẫn sử dụng", icon: "ti-help" },
     ],
   },
   {
@@ -128,11 +129,12 @@ export default function AppLayout() {
   const isDev = import.meta.env.VITE_DEVELOPER_MODE === "dev";
   const devAccounts = [
     "admin",
-    "TESTREQ",
-    "DEMOAD",
-    "DEMOQL",
-    "DEMONV",
-    "DEMOTP",
+    "TPHanhChinh",
+    "NVHanhChinh",
+    "TPKinhDoanh",
+    "NVKinhDoanh",
+    "TPVanThu",
+    "NVVanThu"
   ];
 
   async function handleDevLogin(username: string) {
@@ -266,20 +268,37 @@ export default function AppLayout() {
                   <div className="nav-group-title">{g.title}</div>
                 ))}
               {!isCol &&
-                items.map((n) => (
-                  <Link
-                    key={n.to}
-                    to={n.to}
-                    onClick={() => setOpen(false)}
-                    className={
-                      "nav-item" +
-                      (isActive(loc.pathname, n.to) ? " active" : "")
-                    }
-                  >
-                    {n.icon === "ti-file-import" ? <IconImport size={18} className="ti" style={{ marginRight: 6 }} /> : n.icon === "ti-file-export" ? <IconExport size={18} className="ti" style={{ marginRight: 6 }} /> : <i className={"ti " + n.icon} />}
-                    {n.label}
-                  </Link>
-                ))}
+                items.map((n) => {
+                  if (n.to === "/user-guide") {
+                    return (
+                      <a
+                        key={n.to}
+                        href="/hdsd"
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => setOpen(false)}
+                        className={"nav-item"}
+                      >
+                        <i className={"ti " + n.icon} />
+                        {n.label}
+                      </a>
+                    );
+                  }
+                  return (
+                    <Link
+                      key={n.to}
+                      to={n.to}
+                      onClick={() => setOpen(false)}
+                      className={
+                        "nav-item" +
+                        (isActive(loc.pathname, n.to) ? " active" : "")
+                      }
+                    >
+                      {n.icon === "ti-file-import" ? <IconImport size={18} className="ti" style={{ marginRight: 6 }} /> : n.icon === "ti-file-export" ? <IconExport size={18} className="ti" style={{ marginRight: 6 }} /> : <i className={"ti " + n.icon} />}
+                      {n.label}
+                    </Link>
+                  );
+                })}
             </div>
           );
         })}

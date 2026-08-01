@@ -64,16 +64,18 @@ export default function VpnPermissionList() {
     }
   }
 
-  const companies = Array.from(new Set(subjects.flatMap(s => s.company_names || []))).filter(Boolean) as string[]
-  const departments = Array.from(new Set(subjects.flatMap(s => s.department_names || []))).filter(Boolean) as string[]
+  const companies = Array.from(new Set(subjects.flatMap(s => Array.isArray(s.company_names) ? s.company_names : (typeof s.company_names === 'string' ? [s.company_names] : [])))).filter(Boolean) as string[]
+  const departments = Array.from(new Set(subjects.flatMap(s => Array.isArray(s.department_names) ? s.department_names : (typeof s.department_names === 'string' ? [s.department_names] : [])))).filter(Boolean) as string[]
 
   const filteredSubjects = subjects.filter(s => {
     const term = search.toLowerCase()
     const matchSearch = (s.subject_name || '').toLowerCase().includes(term) ||
                         (s.subject_code || '').toLowerCase().includes(term)
     
-    const matchCompany = filterCompany === 'ALL' || (s.company_names || []).includes(filterCompany)
-    const matchDept = filterDept === 'ALL' || (s.department_names || []).includes(filterDept)
+    const sCompanies = Array.isArray(s.company_names) ? s.company_names : (typeof s.company_names === 'string' ? [s.company_names] : [])
+    const matchCompany = filterCompany === 'ALL' || sCompanies.includes(filterCompany)
+    const sDepartments = Array.isArray(s.department_names) ? s.department_names : (typeof s.department_names === 'string' ? [s.department_names] : [])
+    const matchDept = filterDept === 'ALL' || sDepartments.includes(filterDept)
     
     const servers = s.vpn_access ? s.vpn_access.split(',').map((s: string) => s.trim()) : []
     const matchVpn = filterVpn === 'ALL' || servers.includes(filterVpn)
@@ -182,8 +184,8 @@ export default function VpnPermissionList() {
                           <span className="font-weight-bold" style={{ fontSize: 13 }}>{item.subject_name}</span>
                         </div>
                       </td>}
-                      {cols.company && <td>{item.company_names?.length > 0 ? item.company_names.join(', ') : '- -'}</td>}
-                      {cols.dept && <td>{item.department_names?.length > 0 ? item.department_names.join(', ') : '- -'}</td>}
+                      {cols.company && <td>{Array.isArray(item.company_names) && item.company_names.length > 0 ? item.company_names.join(', ') : (typeof item.company_names === 'string' ? item.company_names : '- -')}</td>}
+                      {cols.dept && <td>{Array.isArray(item.department_names) && item.department_names.length > 0 ? item.department_names.join(', ') : (typeof item.department_names === 'string' ? item.department_names : '- -')}</td>}
                       {cols.dego && <td style={{ textAlign: 'center' }}>
                         <div className="dis-flex justify-content-center">
                           <label className="cursor-pointer" style={{ margin: 0 }}>

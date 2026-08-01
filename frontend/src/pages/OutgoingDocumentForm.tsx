@@ -4,6 +4,7 @@ import { api } from '../api/client'
 import { toast } from '../components/toast'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import { TemplateLibraryModal } from '../components/TemplateLibraryModal'
 
 // Mock data cho danh sách người liên quan
 const MOCK_USERS = [
@@ -50,6 +51,8 @@ export default function OutgoingDocumentForm() {
   })
   
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
+  const [showLibrary, setShowLibrary] = useState(false)
+  const [attachedFile, setAttachedFile] = useState<File | null>(null)
   
   const relatedUsersRef = useRef<HTMLDivElement>(null)
   const reportReceiversRef = useRef<HTMLDivElement>(null)
@@ -226,18 +229,59 @@ export default function OutgoingDocumentForm() {
         {/* BLOCK 1: TỆP VĂN BẢN */}
         <div className="company-card company-summary-container">
           <div className="company-logo-section">
-            <div className="logo-preview" style={{ width: 120, height: 120, background: '#f8fafc', border: '2px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="ti ti-cloud-upload" style={{ fontSize: 48, color: '#94a3b8' }}></i>
+            <div className="logo-preview" style={{ width: 120, height: 120, background: '#f8fafc', border: '2px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 8 }}>
+              {attachedFile ? (
+                <>
+                  <i className="ti ti-file-text" style={{ fontSize: 40, color: '#0ea5e9' }}></i>
+                  <span style={{ fontSize: 12, color: '#1e293b', textAlign: 'center', wordBreak: 'break-all', padding: '0 8px' }}>{attachedFile.name}</span>
+                </>
+              ) : (
+                <i className="ti ti-cloud-upload" style={{ fontSize: 48, color: '#94a3b8' }}></i>
+              )}
             </div>
           </div>
           <div className="company-summary-info">
             <h2 style={{ fontSize: 20, marginBottom: 8, color: '#1e293b' }}>Tệp văn bản</h2>
-            <p style={{ color: '#64748b', fontSize: 14, marginBottom: 16 }}>Kéo thả tệp vào đây hoặc tải lên từ máy tính</p>
-            <button className="btn btn-primary dis-flex align-items-center gap-8" style={{ background: '#00aeef', borderColor: '#00aeef' }}>
-              <i className="ti ti-upload"></i> Tải tệp từ máy tính
-            </button>
+            <p style={{ color: '#64748b', fontSize: 14, marginBottom: 16 }}>
+              {attachedFile ? `Đã đính kèm: ${attachedFile.name}` : 'Kéo thả tệp vào đây hoặc tải lên từ máy tính'}
+            </p>
+            <div className="dis-flex gap-12">
+              <button className="btn btn-primary dis-flex align-items-center gap-8" style={{ background: '#00aeef', borderColor: '#00aeef' }}>
+                <i className="ti ti-upload"></i> Tải tệp từ máy tính
+              </button>
+              <button className="btn outline dis-flex align-items-center gap-8" onClick={() => setShowLibrary(true)}>
+                <i className="ti ti-book"></i> Chọn từ thư viện
+              </button>
+              {attachedFile && (
+                <button className="btn outline dis-flex align-items-center gap-8" style={{ color: '#ef4444', borderColor: '#ef4444' }} onClick={() => setAttachedFile(null)}>
+                  <i className="ti ti-trash"></i> Xóa file
+                </button>
+              )}
+            </div>
           </div>
         </div>
+
+        {showLibrary && (
+          <TemplateLibraryModal 
+            onClose={() => setShowLibrary(false)} 
+            onFileGenerated={(file, meta) => {
+              console.log("File generated with meta:", meta)
+              setAttachedFile(file)
+              if (meta) {
+                 setFormData(prev => ({
+                    ...prev,
+                    subject: meta.subject || prev.subject,
+                    doc_no: meta.doc_no || prev.doc_no,
+                    issued_date: meta.issued_date || prev.issued_date,
+                    doc_type: 'CongVan', // Mặc định là Công văn khi sinh từ mẫu
+                    summary: meta.summary || prev.summary
+                 }))
+              }
+              setShowLibrary(false)
+              toast.success('Đã đính kèm văn bản tự động')
+            }} 
+          />
+        )}
 
         {/* BLOCK 2: THÔNG TIN CHÍNH */}
         <div className="company-card info-section">

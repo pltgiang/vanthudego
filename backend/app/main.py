@@ -30,7 +30,7 @@ from app.modules.document.controller import (
     document_router, register_book_router, numbering_rule_router
 )
 from app.modules.department.controller import router as department_router
-# from app.modules.import_tool.controller import router as import_tool_router
+from app.modules.help_center.controller import router as help_center_router
 
 app = FastAPI(title="DMS Tool API", version="0.1.0")
 
@@ -76,8 +76,6 @@ app.include_router(doc_type_router)
 app.include_router(secrecy_level_router)
 app.include_router(urgency_level_router)
 app.include_router(partner_router)
-# app.include_router(report_router)
-# app.include_router(alert_router)
 app.include_router(setting_router)
 app.include_router(notification_router)
 app.include_router(push_router)
@@ -88,5 +86,5 @@ app.include_router(department_router)
 app.include_router(document_router)
 app.include_router(register_book_router)
 app.include_router(numbering_rule_router)
-# app.include_router(import_tool_router)
+app.include_router(help_center_router)
 

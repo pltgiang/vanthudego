@@ -27,6 +27,9 @@
 ## chung/ — Tham chiếu dev
 - `FEATURE_CHECKLIST.md`, `NAMING_CONVENTIONS.md`
 
+## tai-lieu-ky-thuat/ — Tài liệu kỹ thuật
+- `Huong_Dan_Ket_Noi_Vercel_Ngrok.md` — Hướng dẫn kết nối Frontend Vercel với Backend Local qua Ngrok
+
 ## Khác
 - `datamau/`, `sheet/` — dữ liệu mẫu / bảng gốc
 - `../TASKS.md` — tiến độ triển khai

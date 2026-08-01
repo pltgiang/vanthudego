@@ -17,3 +17,4 @@ from app.modules.setting import model as _setting  # noqa: F401
 from app.modules.import_tool import model as _import_tool  # noqa: F401
 from app.modules.document import model as _document  # noqa: F401
 from app.modules.department import model as _department  # noqa: F401
+from app.modules.help_center import model as _help_center  # noqa: F401
