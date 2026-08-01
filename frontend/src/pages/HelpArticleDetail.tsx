@@ -361,7 +361,7 @@ export default function HelpArticleDetail() {
                           return (
                             <div key={idx} className="timeline-item d-flex" style={{ marginBottom: '20px' }}>
                               <div className="timeline-icon" style={{ 
-                                minWidth: '32px', height: '32px', borderRadius: '50%', 
+                                width: '32px', height: '32px', flexShrink: 0, borderRadius: '50%', 
                                 background: '#e0e7ff', color: '#4f46e5', 
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 marginRight: '16px', fontWeight: 600, fontSize: '14px'
