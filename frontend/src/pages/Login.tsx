@@ -75,25 +75,29 @@ export default function Login() {
             </button>
           </form>
 
-          <div className="lg-or"><span>HOẶC</span></div>
+          {import.meta.env.VITE_GOOGLE_CLIENT_ID && (
+            <>
+              <div className="lg-or"><span>HOẶC</span></div>
 
-          <div className="lg-google">
-            <GoogleLogin
-              onSuccess={async (credentialResponse) => {
-                if (credentialResponse.credential) {
-                  setErr('')
-                  try {
-                    await loginGoogle(credentialResponse.credential)
-                    nav('/')
-                  } catch (ex: any) {
-                    setErr(ex?.response?.data?.error?.message || 'Đăng nhập Google thất bại')
-                  }
-                }
-              }}
-              onError={() => setErr('Đăng nhập Google bị lỗi hoặc bị hủy')}
-              useOneTap
-            />
-          </div>
+              <div className="lg-google">
+                <GoogleLogin
+                  onSuccess={async (credentialResponse) => {
+                    if (credentialResponse.credential) {
+                      setErr('')
+                      try {
+                        await loginGoogle(credentialResponse.credential)
+                        nav('/')
+                      } catch (ex: any) {
+                        setErr(ex?.response?.data?.error?.message || 'Đăng nhập Google thất bại')
+                      }
+                    }
+                  }}
+                  onError={() => setErr('Đăng nhập Google bị lỗi hoặc bị hủy')}
+                  useOneTap
+                />
+              </div>
+            </>
+          )}
 
           <p className="lg-foot-m">© {new Date().getFullYear()} DEGO Holding · Hệ thống nội bộ</p>
         </div>

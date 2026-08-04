@@ -112,16 +112,70 @@ outgoing_content = """
 <p>Kiểm tra lại toàn bộ thông tin và nhấn nút <strong>Lưu</strong> ở góc trên bên phải màn hình để ghi nhận vào hệ thống.</p>
 """
 
+procurement_content = """
+<h1>Hướng dẫn sử dụng Phần mềm Thu mua</h1>
+<p>Phần mềm Thu mua giúp số hóa toàn bộ quy trình từ lúc phát sinh nhu cầu đến khi nhập kho và thanh toán. Quy trình chuẩn bao gồm: <strong>Yêu cầu mua hàng (PYC) &rarr; Khảo sát giá &rarr; Đơn đặt hàng (PO) &rarr; Nhập kho &rarr; Công nợ &rarr; Đề nghị thanh toán</strong>.</p>
+
+<h2>1. Yêu cầu mua hàng (PYC)</h2>
+<p>Bắt đầu quy trình khi phòng ban có nhu cầu mua sắm vật tư, thiết bị.</p>
+<ul>
+  <li>Truy cập menu <strong>Yêu cầu mua hàng</strong>.</li>
+  <li>Click nút <strong>Thêm mới</strong> và điền thông tin: Ngày yêu cầu, Bộ phận, Mức độ ưu tiên.</li>
+  <li>Thêm các hàng hóa/vật tư cần mua cùng với số lượng mong muốn.</li>
+  <li>Lưu và <strong>Gửi duyệt</strong>. Quản lý sẽ nhận được thông báo để phê duyệt.</li>
+</ul>
+
+<h2>2. Khảo sát giá</h2>
+<p>Sau khi PYC được duyệt, nhân viên thu mua tiến hành lấy báo giá từ các nhà cung cấp.</p>
+<ul>
+  <li>Truy cập menu <strong>Khảo sát giá</strong>, tạo phiếu mới liên kết với PYC đã duyệt.</li>
+  <li>Nhập báo giá của các nhà cung cấp (NCC) khác nhau cho từng sản phẩm.</li>
+  <li>Hệ thống sẽ hỗ trợ so sánh giá. Đánh dấu chọn NCC phù hợp nhất và <strong>Trình duyệt</strong>.</li>
+</ul>
+
+<h2>3. Đơn đặt hàng (PO)</h2>
+<p>Khi khảo sát giá được phê duyệt, bạn có thể tạo Đơn đặt hàng chính thức.</p>
+<ul>
+  <li>Truy cập <strong>Đơn đặt hàng</strong>, tạo mới dựa trên kết quả Khảo sát giá.</li>
+  <li>Kiểm tra lại danh sách hàng hóa, số lượng, đơn giá, chi phí vận chuyển, thuế VAT và điều khoản thanh toán.</li>
+  <li>Xác nhận, xuất file PDF (nếu cần) và gửi PO cho nhà cung cấp.</li>
+</ul>
+
+<h2>4. Nhập kho</h2>
+<p>Khi nhà cung cấp giao hàng đến, tiến hành kiểm tra và ghi nhận nhập kho.</p>
+<ul>
+  <li>Truy cập menu <strong>Nhập kho</strong>, tạo phiếu nhập kho liên kết với PO tương ứng.</li>
+  <li>Kiểm tra số lượng thực nhận so với số lượng trên PO. Cập nhật số lượng nhập thực tế.</li>
+  <li>Lưu và hoàn tất phiếu nhập để ghi nhận công nợ và cập nhật trạng thái đơn hàng.</li>
+</ul>
+
+<h2>5. Công nợ và Đề nghị thanh toán</h2>
+<p>Dựa trên hàng đã nhập kho, tiến hành làm thủ tục thanh toán cho nhà cung cấp.</p>
+<ul>
+  <li>Truy cập <strong>Đề nghị thanh toán</strong> để tạo yêu cầu chi tiền.</li>
+  <li>Liên kết với các PO và Phiếu nhập kho tương ứng, đính kèm hóa đơn/chứng từ hợp lệ.</li>
+  <li>Trình duyệt Đề nghị thanh toán theo luồng phê duyệt (Trưởng phòng, Kế toán, Giám đốc).</li>
+</ul>
+"""
+
 def seed_data():
     db: Session = SessionLocal()
     try:
-        # Create a parent folder for User Guides if it doesn't exist
-        root_folder = db.query(HelpArticle).filter_by(title="Hướng dẫn sử dụng", parent_id=None).first()
-        if not root_folder:
-            root_folder = HelpArticle(title="Hướng dẫn sử dụng", sort_order=0, parent_id=None)
-            db.add(root_folder)
+        # Create root folder for Văn Thư
+        root_vt = db.query(HelpArticle).filter_by(title="Văn Thư", parent_id=None).first()
+        if not root_vt:
+            root_vt = HelpArticle(title="Văn Thư", sort_order=0, parent_id=None)
+            db.add(root_vt)
             db.commit()
-            db.refresh(root_folder)
+            db.refresh(root_vt)
+            
+        # Create root folder for Thu Mua
+        root_tm = db.query(HelpArticle).filter_by(title="Thu Mua", parent_id=None).first()
+        if not root_tm:
+            root_tm = HelpArticle(title="Thu Mua", sort_order=1, parent_id=None)
+            db.add(root_tm)
+            db.commit()
+            db.refresh(root_tm)
         
         # Insert Incoming Document Guide
         incoming = db.query(HelpArticle).filter_by(title="Tạo Văn bản đến").first()
@@ -130,11 +184,12 @@ def seed_data():
                 title="Tạo Văn bản đến",
                 content=incoming_content,
                 sort_order=1,
-                parent_id=root_folder.id
+                parent_id=root_vt.id
             )
             db.add(incoming)
         else:
             incoming.content = incoming_content
+            incoming.parent_id = root_vt.id
             
         # Insert Outgoing Document Guide
         outgoing = db.query(HelpArticle).filter_by(title="Tạo Văn bản đi").first()
@@ -143,14 +198,29 @@ def seed_data():
                 title="Tạo Văn bản đi",
                 content=outgoing_content,
                 sort_order=2,
-                parent_id=root_folder.id
+                parent_id=root_vt.id
             )
             db.add(outgoing)
         else:
             outgoing.content = outgoing_content
+            outgoing.parent_id = root_vt.id
+            
+        # Insert Procurement Guide
+        procurement = db.query(HelpArticle).filter_by(title="Quy trình Thu mua").first()
+        if not procurement:
+            procurement = HelpArticle(
+                title="Quy trình Thu mua",
+                content=procurement_content,
+                sort_order=1,
+                parent_id=root_tm.id
+            )
+            db.add(procurement)
+        else:
+            procurement.content = procurement_content
+            procurement.parent_id = root_tm.id
             
         db.commit()
-        print("Đã thêm bài hướng dẫn Tạo Văn bản đến và Tạo Văn bản đi thành công!")
+        print("Đã thêm bài hướng dẫn Tạo Văn bản đến, Tạo Văn bản đi và Quy trình Thu mua thành công!")
     except Exception as e:
         print(f"Error: {e}")
         db.rollback()

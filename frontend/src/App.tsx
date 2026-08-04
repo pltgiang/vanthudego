@@ -39,6 +39,7 @@ import HelpLayout from './layouts/HelpLayout'
 
 import HelpCenterHome from './pages/HelpCenterHome'
 import HelpArticleDetail from './pages/HelpArticleDetail'
+import HelpPortal from './pages/HelpPortal'
 
 function Protected({ children }: { children: JSX.Element }) {
   const { user } = useAuth()
@@ -53,7 +54,8 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/hdsd" element={<Protected><HelpLayout /></Protected>}>
+          <Route path="/hdsd" element={<Protected><HelpPortal /></Protected>} />
+          <Route path="/hdsd/app/:appId" element={<Protected><HelpLayout /></Protected>}>
             <Route index element={<HelpCenterHome />} />
             <Route path=":id" element={<HelpArticleDetail />} />
           </Route>

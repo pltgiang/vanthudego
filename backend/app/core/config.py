@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     LOGIN_RATE_LIMIT: str = "10/minute"  # chống brute-force đăng nhập
 
     ADMIN_CODE: str = "degoadmin"
-    ADMIN_PASSWORD: str = "dego2026"
+    ADMIN_PASSWORD: str = "degoadmin"
 
     DEV_MODE: bool = False   # bật ở .env local (=true) để mở các API dev-only (vd xóa data test)
     

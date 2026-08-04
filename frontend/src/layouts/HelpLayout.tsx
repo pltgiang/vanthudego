@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react'
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { api } from '../api/client'
 
@@ -45,7 +45,7 @@ function findPath(tree: any[], targetId: number, currentPath: any[] = []): any[]
   return null
 }
 
-function TreeNode({ node, activeId, expanded, toggleExpand, level = 0 }: any) {
+function TreeNode({ node, activeId, expanded, toggleExpand, level = 0, appId }: any) {
   const isFolder = node.children && node.children.length > 0
   const isExpanded = expanded.has(node.id)
   const isActive = activeId === node.id
@@ -57,7 +57,7 @@ function TreeNode({ node, activeId, expanded, toggleExpand, level = 0 }: any) {
       <div className="hc_subMenu">
         <div className="hc_subMenu_title">
           <Link 
-            to={`/hdsd/${node.id}`} 
+            to={`/hdsd/app/${appId}/${node.id}`} 
             className="hc_subMenu_titleContent" 
             style={{ marginLeft: `${marginLeft}px` }}
             onClick={(e) => {
@@ -83,7 +83,7 @@ function TreeNode({ node, activeId, expanded, toggleExpand, level = 0 }: any) {
         {isExpanded && (
           <ul className="hc_subMenu_children">
             {node.children.map((child: any) => (
-              <TreeNode key={child.id} node={child} activeId={activeId} expanded={expanded} toggleExpand={toggleExpand} level={level + 1} />
+              <TreeNode key={child.id} node={child} activeId={activeId} expanded={expanded} toggleExpand={toggleExpand} level={level + 1} appId={appId} />
             ))}
           </ul>
         )}
@@ -94,7 +94,7 @@ function TreeNode({ node, activeId, expanded, toggleExpand, level = 0 }: any) {
   return (
     <li className={`hc_menuitem ${isActive ? 'hc_active_menuitem' : ''}`}>
       <Link 
-        to={`/hdsd/${node.id}`} 
+        to={`/hdsd/app/${appId}/${node.id}`} 
         className="hc_menuitem_title"
         style={{ marginLeft: `${marginLeft}px` }}
       >
@@ -111,6 +111,7 @@ export default function HelpLayout() {
   const { can } = useAuth()
   const loc = useLocation()
   const nav = useNavigate()
+  const { appId, id } = useParams()
   const canEdit = can('setting', 'write')
   
   const [tree, setTree] = useState<HelpNode[]>([])
@@ -122,9 +123,7 @@ export default function HelpLayout() {
   const [isSearching, setIsSearching] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
   
-  const activeId = loc.pathname.startsWith('/hdsd/') 
-    ? parseInt(loc.pathname.replace('/hdsd/', '')) 
-    : null
+  const activeId = id ? parseInt(id) : null
 
   const loadTree = async () => {
     try {
@@ -175,17 +174,19 @@ export default function HelpLayout() {
     try {
       const res = await api.post('/api/v1/help-center', {
         title,
-        parent_id: null,
+        parent_id: appId ? parseInt(appId) : null,
         sort_order: tree.length
       })
       await loadTree()
-      nav(`/hdsd/${res.data.data.id}`)
+      nav(`/hdsd/app/${appId}/${res.data.data.id}`)
     } catch (e) {
       console.error(e)
     }
   }
 
-  const breadcrumbs = activeId ? findPath(tree, activeId) : []
+  const breadcrumbs = activeId ? findPath(tree, activeId) : (appId ? findPath(tree, parseInt(appId)) : [])
+  const rootNode = appId ? tree.find(n => n.id === parseInt(appId)) : null
+  const displayNodes = rootNode ? (rootNode.children || []) : []
 
   return (
     <div className="app">
@@ -208,7 +209,7 @@ export default function HelpLayout() {
                         sort_order: 0
                       })
                       await loadTree()
-                      nav(`/hdsd/${res.data.data.id}`)
+                      nav(`/hdsd/app/${appId}/${res.data.data.id}`)
                     } catch (e) {
                       console.error(e)
                     }
@@ -225,17 +226,18 @@ export default function HelpLayout() {
 
         <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', padding: '8px' }}>
           <ul className="hc_menu_root" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {tree.map(node => (
+            {displayNodes.map(node => (
               <TreeNode 
                 key={node.id} 
                 node={node} 
                 activeId={activeId} 
                 expanded={expanded} 
                 toggleExpand={toggleExpand} 
+                appId={appId}
               />
             ))}
           </ul>
-          {tree.length === 0 && (
+          {displayNodes.length === 0 && (
             <div style={{ padding: '1rem', color: '#868e96', fontSize: '0.9rem', textAlign: 'center' }}>
               Chưa có nội dung
             </div>
@@ -251,7 +253,7 @@ export default function HelpLayout() {
           <div style={{ width: '1px', height: '16px', backgroundColor: '#e2e8f0', margin: '0 12px' }}></div>
           <nav aria-label="breadcrumb">
             <ol style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px', fontSize: '14px', color: '#64748b', listStyle: 'none', padding: 0, margin: 0 }}>
-              <li><Link to="/hdsd" style={{ color: 'inherit', textDecoration: 'none' }}>Quản trị</Link></li>
+              <li><Link to="/hdsd" style={{ color: 'inherit', textDecoration: 'none' }}>Trung tâm hỗ trợ</Link></li>
               {breadcrumbs && breadcrumbs.map((b, i) => (
                 <span key={b.id} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <li><i className="ti ti-chevron-right" style={{ fontSize: '12px' }} /></li>
@@ -259,7 +261,7 @@ export default function HelpLayout() {
                     {i === breadcrumbs.length - 1 ? (
                       <span style={{ color: '#0f172a' }}>{b.title}</span>
                     ) : (
-                      <Link to={`/hdsd/${b.id}`} style={{ color: 'inherit', textDecoration: 'none' }}>{b.title}</Link>
+                      <Link to={`/hdsd/app/${appId}/${b.id}`} style={{ color: 'inherit', textDecoration: 'none' }}>{b.title}</Link>
                     )}
                   </li>
                 </span>
@@ -290,7 +292,7 @@ export default function HelpLayout() {
                       {searchResults.map(item => (
                         <li key={item.id}>
                           <Link 
-                            to={`/hdsd/${item.id}`} 
+                            to={`/hdsd/app/${appId}/${item.id}`} 
                             style={{ display: 'block', padding: '8px 12px', textDecoration: 'none', color: '#0f172a', fontSize: '13px', borderBottom: '1px solid #f1f5f9' }}
                             onClick={() => { setShowDropdown(false); setSearchQuery(''); }}
                           >
@@ -322,10 +324,10 @@ export default function HelpLayout() {
         </header>
 
         <div style={{ flex: 1, overflowY: 'auto' }}>
-          {loc.pathname === '/hdsd' || loc.pathname === '/hdsd/' ? (
+          {!id ? (
           <div style={{ padding: '2rem 4rem 4rem 4rem', maxWidth: 900, margin: '0 auto', width: '100%', color: '#1f2329' }}>
             <h1 style={{ fontSize: '36px', fontWeight: 700, lineHeight: 1.4, marginBottom: '24px', borderBottom: '1px solid #eaecef', paddingBottom: '16px', marginTop: '24px' }}>
-              Trung tâm Hướng dẫn Sử dụng
+              {rootNode ? rootNode.title : 'Trung tâm Hướng dẫn Sử dụng'}
             </h1>
             <div style={{ fontSize: '16px', lineHeight: 1.7 }}>
               <p style={{ marginBottom: '16px' }}>
