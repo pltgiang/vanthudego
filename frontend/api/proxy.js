@@ -3,9 +3,10 @@ export default async function handler(req, res) {
   const backendUrl = process.env.BACKEND_URL;
   
   if (!backendUrl) {
+    const keys = Object.keys(process.env).filter(k => !k.startsWith('npm_')).join(', ');
     return res.status(500).json({ 
       success: false, 
-      message: "Lỗi Vercel: Chưa cài đặt biến môi trường BACKEND_URL trên Vercel" 
+      message: `Lỗi Vercel: Chưa cài đặt biến môi trường BACKEND_URL. Các biến hiện có: ${keys}`
     });
   }
 
